@@ -1132,6 +1132,285 @@ export const schemaDict = {
       },
     },
   },
+  ComWhtwndBlogDefs: {
+    lexicon: 1,
+    id: 'com.whtwnd.blog.defs',
+    defs: {
+      blogEntry: {
+        type: 'object',
+        required: ['content'],
+        properties: {
+          content: {
+            type: 'string',
+            maxLength: 100000,
+          },
+          createdAt: {
+            type: 'string',
+            format: 'datetime',
+          },
+        },
+      },
+      comment: {
+        type: 'object',
+        required: ['content', 'entryUri'],
+        properties: {
+          content: {
+            type: 'string',
+            maxLength: 1000,
+          },
+          entryUri: {
+            type: 'string',
+            format: 'at-uri',
+          },
+        },
+      },
+      ogp: {
+        type: 'object',
+        required: ['url'],
+        properties: {
+          url: {
+            type: 'string',
+            format: 'uri',
+          },
+          width: {
+            type: 'integer',
+          },
+          height: {
+            type: 'integer',
+          },
+        },
+      },
+      blobMetadata: {
+        type: 'object',
+        required: ['blobref'],
+        properties: {
+          blobref: {
+            type: 'blob',
+            accept: ['*/*'],
+          },
+          name: {
+            type: 'string',
+          },
+        },
+      },
+    },
+  },
+  ComWhtwndBlogEntry: {
+    lexicon: 1,
+    id: 'com.whtwnd.blog.entry',
+    defs: {
+      main: {
+        type: 'record',
+        description: 'A declaration of a post.',
+        key: 'tid',
+        record: {
+          type: 'object',
+          required: ['content'],
+          properties: {
+            content: {
+              type: 'string',
+              maxLength: 100000,
+            },
+            createdAt: {
+              type: 'string',
+              format: 'datetime',
+            },
+            title: {
+              type: 'string',
+              maxLength: 1000,
+            },
+            subtitle: {
+              type: 'string',
+              maxLength: 1000,
+            },
+            ogp: {
+              type: 'ref',
+              ref: 'lex:com.whtwnd.blog.defs#ogp',
+            },
+            theme: {
+              type: 'string',
+              enum: ['github-light'],
+            },
+            blobs: {
+              type: 'array',
+              items: {
+                type: 'ref',
+                ref: 'lex:com.whtwnd.blog.defs#blobMetadata',
+              },
+            },
+            isDraft: {
+              type: 'boolean',
+              description:
+                '(DEPRECATED) Marks this entry as draft to tell AppViews not to show it to anyone except for the author',
+            },
+            visibility: {
+              type: 'string',
+              enum: ['public', 'url', 'author'],
+              default: 'public',
+              description: 'Tells the visibility of the article to AppView.',
+            },
+          },
+        },
+      },
+    },
+  },
+  ComWhtwndBlogGetAuthorPosts: {
+    lexicon: 1,
+    id: 'com.whtwnd.blog.getAuthorPosts',
+    defs: {
+      main: {
+        type: 'query',
+        description: 'Get blog posts associated to designated author.',
+        parameters: {
+          type: 'params',
+          required: ['author'],
+          properties: {
+            author: {
+              type: 'string',
+              format: 'did',
+            },
+          },
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['post'],
+            properties: {
+              post: {
+                type: 'array',
+                items: {
+                  type: 'ref',
+                  ref: 'lex:com.whtwnd.blog.defs#blogEntry',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  ComWhtwndBlogGetEntryMetadataByName: {
+    lexicon: 1,
+    id: 'com.whtwnd.blog.getEntryMetadataByName',
+    defs: {
+      main: {
+        type: 'query',
+        description:
+          'Get AT URI by blog author and entry name. If there are multiple blog entries associated with the name, return the latest one.',
+        parameters: {
+          type: 'params',
+          required: ['author', 'entryTitle'],
+          properties: {
+            author: {
+              type: 'string',
+              format: 'at-identifier',
+            },
+            entryTitle: {
+              type: 'string',
+            },
+          },
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['entryUri'],
+            properties: {
+              entryUri: {
+                type: 'string',
+                format: 'at-uri',
+              },
+              lastUpdate: {
+                type: 'string',
+                format: 'datetime',
+              },
+              cid: {
+                type: 'string',
+                format: 'cid',
+              },
+            },
+          },
+        },
+        errors: [
+          {
+            name: 'NotFound',
+            description:
+              "If the associated name isn't registered in the author's repo, this error is returned",
+          },
+        ],
+      },
+    },
+  },
+  ComWhtwndBlogGetMentionsByEntry: {
+    lexicon: 1,
+    id: 'com.whtwnd.blog.getMentionsByEntry',
+    defs: {
+      main: {
+        type: 'query',
+        description: 'Get comments associated to designated post.',
+        parameters: {
+          type: 'params',
+          required: ['postUri'],
+          properties: {
+            postUri: {
+              type: 'string',
+              format: 'at-uri',
+            },
+          },
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['mentions'],
+            properties: {
+              mentions: {
+                type: 'array',
+                items: {
+                  type: 'string',
+                  format: 'at-uri',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  ComWhtwndBlogNotifyOfNewEntry: {
+    lexicon: 1,
+    id: 'com.whtwnd.blog.notifyOfNewEntry',
+    defs: {
+      main: {
+        type: 'procedure',
+        description:
+          'Notify AppView of existence of new entry and request indexing',
+        input: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['entryUri'],
+            properties: {
+              entryUri: {
+                type: 'string',
+                format: 'at-uri',
+              },
+            },
+          },
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: [],
+            properties: {},
+          },
+        },
+        errors: [],
+      },
+    },
+  },
   AppBskyActorDefs: {
     lexicon: 1,
     id: 'app.bsky.actor.defs',
@@ -1292,6 +1571,12 @@ export const ids = {
   ComAtprotoRepoPutRecord: 'com.atproto.repo.putRecord',
   ComAtprotoRepoStrongRef: 'com.atproto.repo.strongRef',
   ComAtprotoRepoUploadBlob: 'com.atproto.repo.uploadBlob',
+  ComWhtwndBlogDefs: 'com.whtwnd.blog.defs',
+  ComWhtwndBlogEntry: 'com.whtwnd.blog.entry',
+  ComWhtwndBlogGetAuthorPosts: 'com.whtwnd.blog.getAuthorPosts',
+  ComWhtwndBlogGetEntryMetadataByName: 'com.whtwnd.blog.getEntryMetadataByName',
+  ComWhtwndBlogGetMentionsByEntry: 'com.whtwnd.blog.getMentionsByEntry',
+  ComWhtwndBlogNotifyOfNewEntry: 'com.whtwnd.blog.notifyOfNewEntry',
   AppBskyActorDefs: 'app.bsky.actor.defs',
   AppBskyActorProfile: 'app.bsky.actor.profile',
 } as const

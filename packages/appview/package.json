@@ -1,5 +1,5 @@
 {
-  "name": "@statusphere/appview",
+  "name": "@swsh/appview",
   "version": "0.0.1",
   "description": "Statusphere AppView backend",
   "author": "",
@@ -10,7 +10,7 @@
     "dev": "tsx watch --clear-screen=false src/index.ts | pino-pretty",
     "build": "tsup",
     "start": "node dist/index.js",
-    "lexgen": "lex gen-server ./src/lexicons ../../lexicons/xyz/statusphere/* ../../lexicons/com/atproto/*/* ../../lexicons/app/bsky/*/* --yes && pnpm format",
+    "lexgen": "lex gen-server ./src/lexicons ../../lexicons/xyz/*/* ../../lexicons/com/atproto/*/* ../../lexicons/com/whtwnd/*/* ../../lexicons/app/bsky/*/* --yes && pnpm format",
     "clean": "rimraf dist coverage",
     "format": "prettier --write src",
     "typecheck": "tsc --noEmit"
@@ -24,7 +24,7 @@
     "@atproto/sync": "^0.1.15",
     "@atproto/syntax": "^0.3.3",
     "@atproto/xrpc-server": "^0.7.11",
-    "@statusphere/lexicon": "workspace:*",
+    "@swsh/lexicon": "workspace:*",
     "better-sqlite3": "^11.8.1",
     "compression": "^1.8.0",
     "cors": "^2.8.5",

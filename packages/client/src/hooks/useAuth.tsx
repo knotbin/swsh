@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useContext, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { XRPCError } from '@atproto/xrpc'
-import { XyzStatusphereGetUser } from '@statusphere/lexicon'
+import { XyzStatusphereGetUser } from '@swsh/lexicon'
 
 import api from '#/services/api'
 

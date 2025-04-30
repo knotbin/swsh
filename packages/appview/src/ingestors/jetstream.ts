@@ -1,4 +1,4 @@
-import { XyzStatusphereStatus } from '@statusphere/lexicon'
+import { XyzStatusphereStatus } from '@swsh/lexicon'
 import pino from 'pino'
 import WebSocket from 'ws'
 

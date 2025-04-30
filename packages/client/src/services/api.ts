@@ -1,9 +1,9 @@
-import * as Lexicon from '@statusphere/lexicon'
+import * as Lexicon from '@swsh/lexicon'
 import type {
   XyzStatusphereGetStatuses,
   XyzStatusphereGetUser,
   XyzStatusphereSendStatus,
-} from '@statusphere/lexicon'
+} from '@swsh/lexicon'
 
 class StatusphereAgent extends Lexicon.AtpBaseClient {
   constructor() {

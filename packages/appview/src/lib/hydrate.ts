@@ -2,7 +2,7 @@ import {
   AppBskyActorDefs,
   AppBskyActorProfile,
   XyzStatusphereDefs,
-} from '@statusphere/lexicon'
+} from '@swsh/lexicon'
 
 import { AppContext } from '#/context'
 import { Status } from '#/db'

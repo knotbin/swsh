@@ -1,5 +1,5 @@
 import { AuthRequiredError } from '@atproto/xrpc-server'
-import { AppBskyActorProfile } from '@statusphere/lexicon'
+import { AppBskyActorProfile } from '@swsh/lexicon'
 
 import { AppContext } from '#/context'
 import { Server } from '#/lexicons'

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { XyzStatusphereDefs } from '@statusphere/lexicon'
+import { XyzStatusphereDefs } from '@swsh/lexicon'
 
 import useAuth from '#/hooks/useAuth'
 import api from '#/services/api'

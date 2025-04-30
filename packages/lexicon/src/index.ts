@@ -20,6 +20,12 @@ import * as ComAtprotoRepoListRecords from './types/com/atproto/repo/listRecords
 import * as ComAtprotoRepoPutRecord from './types/com/atproto/repo/putRecord.js'
 import * as ComAtprotoRepoStrongRef from './types/com/atproto/repo/strongRef.js'
 import * as ComAtprotoRepoUploadBlob from './types/com/atproto/repo/uploadBlob.js'
+import * as ComWhtwndBlogDefs from './types/com/whtwnd/blog/defs.js'
+import * as ComWhtwndBlogEntry from './types/com/whtwnd/blog/entry.js'
+import * as ComWhtwndBlogGetAuthorPosts from './types/com/whtwnd/blog/getAuthorPosts.js'
+import * as ComWhtwndBlogGetEntryMetadataByName from './types/com/whtwnd/blog/getEntryMetadataByName.js'
+import * as ComWhtwndBlogGetMentionsByEntry from './types/com/whtwnd/blog/getMentionsByEntry.js'
+import * as ComWhtwndBlogNotifyOfNewEntry from './types/com/whtwnd/blog/notifyOfNewEntry.js'
 import * as XyzStatusphereDefs from './types/xyz/statusphere/defs.js'
 import * as XyzStatusphereGetStatuses from './types/xyz/statusphere/getStatuses.js'
 import * as XyzStatusphereGetUser from './types/xyz/statusphere/getUser.js'
@@ -45,6 +51,12 @@ export * as ComAtprotoRepoListRecords from './types/com/atproto/repo/listRecords
 export * as ComAtprotoRepoPutRecord from './types/com/atproto/repo/putRecord.js'
 export * as ComAtprotoRepoStrongRef from './types/com/atproto/repo/strongRef.js'
 export * as ComAtprotoRepoUploadBlob from './types/com/atproto/repo/uploadBlob.js'
+export * as ComWhtwndBlogDefs from './types/com/whtwnd/blog/defs.js'
+export * as ComWhtwndBlogEntry from './types/com/whtwnd/blog/entry.js'
+export * as ComWhtwndBlogGetAuthorPosts from './types/com/whtwnd/blog/getAuthorPosts.js'
+export * as ComWhtwndBlogGetEntryMetadataByName from './types/com/whtwnd/blog/getEntryMetadataByName.js'
+export * as ComWhtwndBlogGetMentionsByEntry from './types/com/whtwnd/blog/getMentionsByEntry.js'
+export * as ComWhtwndBlogNotifyOfNewEntry from './types/com/whtwnd/blog/notifyOfNewEntry.js'
 export * as AppBskyActorDefs from './types/app/bsky/actor/defs.js'
 export * as AppBskyActorProfile from './types/app/bsky/actor/profile.js'
 
@@ -176,10 +188,12 @@ export class StatusRecord {
 export class ComNS {
   _client: XrpcClient
   atproto: ComAtprotoNS
+  whtwnd: ComWhtwndNS
 
   constructor(client: XrpcClient) {
     this._client = client
     this.atproto = new ComAtprotoNS(client)
+    this.whtwnd = new ComWhtwndNS(client)
   }
 }
 
@@ -312,6 +326,134 @@ export class ComAtprotoRepoNS {
       opts?.qp,
       data,
       opts,
+    )
+  }
+}
+
+export class ComWhtwndNS {
+  _client: XrpcClient
+  blog: ComWhtwndBlogNS
+
+  constructor(client: XrpcClient) {
+    this._client = client
+    this.blog = new ComWhtwndBlogNS(client)
+  }
+}
+
+export class ComWhtwndBlogNS {
+  _client: XrpcClient
+  entry: EntryRecord
+
+  constructor(client: XrpcClient) {
+    this._client = client
+    this.entry = new EntryRecord(client)
+  }
+
+  getAuthorPosts(
+    params?: ComWhtwndBlogGetAuthorPosts.QueryParams,
+    opts?: ComWhtwndBlogGetAuthorPosts.CallOptions,
+  ): Promise<ComWhtwndBlogGetAuthorPosts.Response> {
+    return this._client.call(
+      'com.whtwnd.blog.getAuthorPosts',
+      params,
+      undefined,
+      opts,
+    )
+  }
+
+  getEntryMetadataByName(
+    params?: ComWhtwndBlogGetEntryMetadataByName.QueryParams,
+    opts?: ComWhtwndBlogGetEntryMetadataByName.CallOptions,
+  ): Promise<ComWhtwndBlogGetEntryMetadataByName.Response> {
+    return this._client
+      .call('com.whtwnd.blog.getEntryMetadataByName', params, undefined, opts)
+      .catch((e) => {
+        throw ComWhtwndBlogGetEntryMetadataByName.toKnownErr(e)
+      })
+  }
+
+  getMentionsByEntry(
+    params?: ComWhtwndBlogGetMentionsByEntry.QueryParams,
+    opts?: ComWhtwndBlogGetMentionsByEntry.CallOptions,
+  ): Promise<ComWhtwndBlogGetMentionsByEntry.Response> {
+    return this._client.call(
+      'com.whtwnd.blog.getMentionsByEntry',
+      params,
+      undefined,
+      opts,
+    )
+  }
+
+  notifyOfNewEntry(
+    data?: ComWhtwndBlogNotifyOfNewEntry.InputSchema,
+    opts?: ComWhtwndBlogNotifyOfNewEntry.CallOptions,
+  ): Promise<ComWhtwndBlogNotifyOfNewEntry.Response> {
+    return this._client.call(
+      'com.whtwnd.blog.notifyOfNewEntry',
+      opts?.qp,
+      data,
+      opts,
+    )
+  }
+}
+
+export class EntryRecord {
+  _client: XrpcClient
+
+  constructor(client: XrpcClient) {
+    this._client = client
+  }
+
+  async list(
+    params: OmitKey<ComAtprotoRepoListRecords.QueryParams, 'collection'>,
+  ): Promise<{
+    cursor?: string
+    records: { uri: string; value: ComWhtwndBlogEntry.Record }[]
+  }> {
+    const res = await this._client.call('com.atproto.repo.listRecords', {
+      collection: 'com.whtwnd.blog.entry',
+      ...params,
+    })
+    return res.data
+  }
+
+  async get(
+    params: OmitKey<ComAtprotoRepoGetRecord.QueryParams, 'collection'>,
+  ): Promise<{ uri: string; cid: string; value: ComWhtwndBlogEntry.Record }> {
+    const res = await this._client.call('com.atproto.repo.getRecord', {
+      collection: 'com.whtwnd.blog.entry',
+      ...params,
+    })
+    return res.data
+  }
+
+  async create(
+    params: OmitKey<
+      ComAtprotoRepoCreateRecord.InputSchema,
+      'collection' | 'record'
+    >,
+    record: Un$Typed<ComWhtwndBlogEntry.Record>,
+    headers?: Record<string, string>,
+  ): Promise<{ uri: string; cid: string }> {
+    const collection = 'com.whtwnd.blog.entry'
+    const res = await this._client.call(
+      'com.atproto.repo.createRecord',
+      undefined,
+      { collection, ...params, record: { ...record, $type: collection } },
+      { encoding: 'application/json', headers },
+    )
+    return res.data
+  }
+
+  async delete(
+    params: OmitKey<ComAtprotoRepoDeleteRecord.InputSchema, 'collection'>,
+    headers?: Record<string, string>,
+  ): Promise<void> {
+    await this._client.call(
+      'com.atproto.repo.deleteRecord',
+      undefined,
+      { collection: 'com.whtwnd.blog.entry', ...params },
+      { headers },
     )
   }
 }

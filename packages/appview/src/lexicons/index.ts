@@ -20,6 +20,10 @@ import * as ComAtprotoRepoListMissingBlobs from './types/com/atproto/repo/listMi
 import * as ComAtprotoRepoListRecords from './types/com/atproto/repo/listRecords.js'
 import * as ComAtprotoRepoPutRecord from './types/com/atproto/repo/putRecord.js'
 import * as ComAtprotoRepoUploadBlob from './types/com/atproto/repo/uploadBlob.js'
+import * as ComWhtwndBlogGetAuthorPosts from './types/com/whtwnd/blog/getAuthorPosts.js'
+import * as ComWhtwndBlogGetEntryMetadataByName from './types/com/whtwnd/blog/getEntryMetadataByName.js'
+import * as ComWhtwndBlogGetMentionsByEntry from './types/com/whtwnd/blog/getMentionsByEntry.js'
+import * as ComWhtwndBlogNotifyOfNewEntry from './types/com/whtwnd/blog/notifyOfNewEntry.js'
 import * as XyzStatusphereGetStatuses from './types/xyz/statusphere/getStatuses.js'
 import * as XyzStatusphereGetUser from './types/xyz/statusphere/getUser.js'
 import * as XyzStatusphereSendStatus from './types/xyz/statusphere/sendStatus.js'
@@ -96,10 +100,12 @@ export class XyzStatusphereNS {
 export class ComNS {
   _server: Server
   atproto: ComAtprotoNS
+  whtwnd: ComWhtwndNS
 
   constructor(server: Server) {
     this._server = server
     this.atproto = new ComAtprotoNS(server)
+    this.whtwnd = new ComWhtwndNS(server)
   }
 }
 
@@ -227,6 +233,68 @@ export class ComAtprotoRepoNS {
     >,
   ) {
     const nsid = 'com.atproto.repo.uploadBlob' // @ts-ignore
+    return this._server.xrpc.method(nsid, cfg)
+  }
+}
+
+export class ComWhtwndNS {
+  _server: Server
+  blog: ComWhtwndBlogNS
+
+  constructor(server: Server) {
+    this._server = server
+    this.blog = new ComWhtwndBlogNS(server)
+  }
+}
+
+export class ComWhtwndBlogNS {
+  _server: Server
+
+  constructor(server: Server) {
+    this._server = server
+  }
+
+  getAuthorPosts<AV extends AuthVerifier>(
+    cfg: ConfigOf<
+      AV,
+      ComWhtwndBlogGetAuthorPosts.Handler<ExtractAuth<AV>>,
+      ComWhtwndBlogGetAuthorPosts.HandlerReqCtx<ExtractAuth<AV>>
+    >,
+  ) {
+    const nsid = 'com.whtwnd.blog.getAuthorPosts' // @ts-ignore
+    return this._server.xrpc.method(nsid, cfg)
+  }
+
+  getEntryMetadataByName<AV extends AuthVerifier>(
+    cfg: ConfigOf<
+      AV,
+      ComWhtwndBlogGetEntryMetadataByName.Handler<ExtractAuth<AV>>,
+      ComWhtwndBlogGetEntryMetadataByName.HandlerReqCtx<ExtractAuth<AV>>
+    >,
+  ) {
+    const nsid = 'com.whtwnd.blog.getEntryMetadataByName' // @ts-ignore
+    return this._server.xrpc.method(nsid, cfg)
+  }
+
+  getMentionsByEntry<AV extends AuthVerifier>(
+    cfg: ConfigOf<
+      AV,
+      ComWhtwndBlogGetMentionsByEntry.Handler<ExtractAuth<AV>>,
+      ComWhtwndBlogGetMentionsByEntry.HandlerReqCtx<ExtractAuth<AV>>
+    >,
+  ) {
+    const nsid = 'com.whtwnd.blog.getMentionsByEntry' // @ts-ignore
+    return this._server.xrpc.method(nsid, cfg)
+  }
+
+  notifyOfNewEntry<AV extends AuthVerifier>(
+    cfg: ConfigOf<
+      AV,
+      ComWhtwndBlogNotifyOfNewEntry.Handler<ExtractAuth<AV>>,
+      ComWhtwndBlogNotifyOfNewEntry.HandlerReqCtx<ExtractAuth<AV>>
+    >,
+  ) {
+    const nsid = 'com.whtwnd.blog.notifyOfNewEntry' // @ts-ignore
     return this._server.xrpc.method(nsid, cfg)
   }
 }

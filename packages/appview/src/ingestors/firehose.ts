@@ -1,6 +1,6 @@
 import { IdResolver } from '@atproto/identity'
 import { Firehose, MemoryRunner, type Event } from '@atproto/sync'
-import { XyzStatusphereStatus } from '@statusphere/lexicon'
+import { XyzStatusphereStatus } from '@swsh/lexicon'
 import pino from 'pino'
 
 import type { Database } from '#/db'

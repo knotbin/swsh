@@ -1,5 +1,5 @@
 {
-  "name": "@statusphere/lexicon",
+  "name": "@swsh/lexicon",
   "version": "0.0.1",
   "description": "Generated API client for Statusphere lexicons",
   "author": "",
@@ -20,7 +20,7 @@
     "dev": "tsup --watch",
     "clean": "rimraf dist",
     "typecheck": "tsc --noEmit",
-    "lexgen": "lex gen-api ./src ../../lexicons/xyz/statusphere/* ../../lexicons/com/atproto/*/* ../../lexicons/app/bsky/*/* --yes && pnpm format",
+    "lexgen": "lex gen-api ./src ../../lexicons/xyz/*/* ../../lexicons/com/atproto/*/* ../../lexicons/com/whtwnd/*/* ../../lexicons/app/bsky/*/* --yes && pnpm format",
     "format": "prettier --write src"
   },
   "dependencies": {

@@ -4,7 +4,7 @@ import {
   InvalidRequestError,
   UpstreamFailureError,
 } from '@atproto/xrpc-server'
-import { XyzStatusphereStatus } from '@statusphere/lexicon'
+import { XyzStatusphereStatus } from '@swsh/lexicon'
 
 import { AppContext } from '#/context'
 import { Server } from '#/lexicons'
