@@ -14,12 +14,23 @@ export type DatabaseSchema = {
   auth_session: AuthSession
   auth_state: AuthState
   cursor: Cursor
+  entry: Entry
 }
 
 export type Status = {
   uri: string
   authorDid: string
   status: string
+  createdAt: string
+  indexedAt: string
+}
+
+export type Entry = {
+  uri: string
+  authorDid: string
+  title: string | null
+  subtitle: string | null
+  content: string
   createdAt: string
   indexedAt: string
 }
@@ -100,6 +111,16 @@ migrations['001'] = {
       .createTable('auth_state')
       .addColumn('key', 'varchar', (col) => col.primaryKey())
       .addColumn('state', 'varchar', (col) => col.notNull())
+      .execute()
+    await db.schema
+      .createTable('entry')
+      .addColumn('uri', 'varchar', (col) => col.primaryKey())
+      .addColumn('authorDid', 'varchar', (col) => col.notNull())
+      .addColumn('title', 'varchar', (col) => col)
+      .addColumn('subtitle', 'varchar', (col) => col)
+      .addColumn('content', 'varchar', (col) => col.notNull())
+      .addColumn('createdAt', 'varchar', (col) => col.notNull())
+      .addColumn('indexedAt', 'varchar', (col) => col.notNull())
       .execute()
   },
   async down(db: Kysely<unknown>) {

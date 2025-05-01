@@ -44,12 +44,6 @@
                 "url": {
                     "type": "string",
                     "format": "uri"
-                },
-                "width": {
-                    "type": "integer"
-                },
-                "height": {
-                    "type": "integer"
                 }
             }
         },
@@ -62,8 +56,18 @@
                 "blobref": {
                     "type": "blob",
                     "accept": [
-                        "*/*"
-                    ]
+                        "image/png",
+                        "image/jpeg",
+                        "image/gif",
+                        "image/webp",
+                        "image/avif",
+                        "image/heic",
+                        "image/heif"
+                    ],
+                    "maxSize": 1000000
+                },
+                "encoding": {
+                    "type": "string"
                 },
                 "name": {
                     "type": "string"

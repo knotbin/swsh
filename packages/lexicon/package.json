@@ -20,7 +20,7 @@
     "dev": "tsup --watch",
     "clean": "rimraf dist",
     "typecheck": "tsc --noEmit",
-    "lexgen": "lex gen-api ./src ../../lexicons/xyz/*/* ../../lexicons/com/atproto/*/* ../../lexicons/com/whtwnd/*/* ../../lexicons/app/bsky/*/* --yes && pnpm format",
+    "lexgen": "lex gen-api ./src ../../lexicons/xyz/*/* ../../lexicons/com/atproto/*/* ../../lexicons/com/whtwnd/*/* ../../lexicons/space/swsh/*/* ../../lexicons/app/bsky/*/* --yes && pnpm format",
     "format": "prettier --write src"
   },
   "dependencies": {
@@ -31,7 +31,7 @@
     "multiformats": "^13.3.2"
   },
   "devDependencies": {
-    "@atproto/lex-cli": "^0.6.1",
+    "@atproto/lex-cli": "^0.8.0",
     "@types/node": "^22.13.8",
     "rimraf": "^6.0.1",
     "tsup": "^8.4.0",

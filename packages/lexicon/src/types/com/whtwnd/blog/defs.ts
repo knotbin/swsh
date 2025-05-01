@@ -1,11 +1,15 @@
 /**
  * GENERATED CODE - DO NOT MODIFY
  */
-import { BlobRef, ValidationResult } from '@atproto/lexicon'
+import { BlobRef, type ValidationResult } from '@atproto/lexicon'
 import { CID } from 'multiformats/cid'
 
 import { validate as _validate } from '../../../../lexicons'
-import { is$typed as _is$typed, $Typed, OmitKey } from '../../../../util'
+import {
+  is$typed as _is$typed,
+  type $Typed,
+  type OmitKey,
+} from '../../../../util'
 
 const is$typed = _is$typed,
   validate = _validate
@@ -46,8 +50,6 @@ export function validateComment<V>(v: V) {
 export interface Ogp {
   $type?: 'com.whtwnd.blog.defs#ogp'
   url: string
-  width?: number
-  height?: number
 }
 
 const hashOgp = 'ogp'
@@ -63,6 +65,7 @@ export function validateOgp<V>(v: V) {
 export interface BlobMetadata {
   $type?: 'com.whtwnd.blog.defs#blobMetadata'
   blobref: BlobRef
+  encoding?: string
   name?: string
 }
 

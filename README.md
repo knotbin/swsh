@@ -1,4 +1,4 @@
-# Statusphere React
+# swsh
 
 A status sharing application built with React and the AT Protocol.
 

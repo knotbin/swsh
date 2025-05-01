@@ -9,8 +9,8 @@ importers:
   .:
     devDependencies:
       '@atproto/lex-cli':
-        specifier: ^0.6.1
-        version: 0.6.1
+        specifier: ^0.8.0
+        version: 0.8.0
       '@ianvs/prettier-plugin-sort-imports':
         specifier: ^4.4.1
         version: 4.4.1(prettier@3.5.2)
@@ -94,8 +94,8 @@ importers:
         version: 8.18.1
     devDependencies:
       '@atproto/lex-cli':
-        specifier: ^0.6.1
-        version: 0.6.1
+        specifier: ^0.8.0
+        version: 0.8.0
       '@types/better-sqlite3':
         specifier: ^7.6.12
         version: 7.6.12
@@ -210,8 +210,8 @@ importers:
         version: 13.3.2
     devDependencies:
       '@atproto/lex-cli':
-        specifier: ^0.6.1
-        version: 0.6.1
+        specifier: ^0.8.0
+        version: 0.8.0
       '@types/node':
         specifier: ^22.13.8
         version: 22.13.8
@@ -270,6 +270,9 @@ packages:
   '@atproto/common-web@0.4.0':
     resolution: {integrity: sha512-ZYL0P9myHybNgwh/hBY0HaBzqiLR1B5/ie5bJpLQAg0whRzNA28t8/nU2vh99tbsWcAF0LOD29M8++LyENJLNQ==}
 
+  '@atproto/common-web@0.4.1':
+    resolution: {integrity: sha512-Ghh+djHYMAUCktLKwr2IuGgtjcwSWGudp+K7+N7KBA9pDDloOXUEY8Agjc5SHSo9B1QIEFkegClU5n+apn2e0w==}
+
   '@atproto/common@0.4.8':
     resolution: {integrity: sha512-/etCtnWQGLcfiGhIPwxAWrzgzoGB22nMWMeQcU6xZgRT4Cqrfg3A08jAMIHqve/AQpL+6D82lHYp36CG7a5G0w==}
     engines: {node: '>=18.7.0'}
@@ -294,10 +297,13 @@ packages:
   '@atproto/jwk@0.1.3':
     resolution: {integrity: sha512-5rBgA8Fk4fg6MfNyEQvUnwq1MRn5xZOXYj4oxLuZ549XeNp2Rm2v+psuEkICD+o6pfIoMX4Hw7UTlXDrpsKKlQ==}
 
-  '@atproto/lex-cli@0.6.1':
-    resolution: {integrity: sha512-fUZSx/l8J50Nxe9J/bF996PjV79oUmkShNewNvbuYgsOVZJtO3gu9jPMYX8+bhJ4eQkCwHbm8edVQDJx5rW3eg==}
+  '@atproto/lex-cli@0.8.0':
+    resolution: {integrity: sha512-/ZY21TQYTqbjhkqQ179um2yWIfoMoH4gFpVJEQyJnnOBNkMCKFDvJFga9nVi70TWLxyqh0T8GWC5krayMoidCw==}
     engines: {node: '>=18.7.0'}
     hasBin: true
+
+  '@atproto/lexicon@0.4.10':
+    resolution: {integrity: sha512-uDbP20vetBgtXPuxoyRcvOGBt2gNe1dFc9yYKcb6jWmXfseHiGTnIlORJOLBXIT2Pz15Eap4fLxAu6zFAykD5A==}
 
   '@atproto/lexicon@0.4.7':
     resolution: {integrity: sha512-/x6h3tAiDNzSi4eXtC8ke65B7UzsagtlGRHmUD95698x5lBRpDnpizj0fZWTZVYed5qnOmz/ZEue+v3wDmO61g==}
@@ -322,6 +328,9 @@ packages:
 
   '@atproto/syntax@0.3.3':
     resolution: {integrity: sha512-F1LZweesNYdBbZBXVa72N/cSvchG8Q1tG4/209ZXbIuM3FwQtkgn+zgmmV4P4ORmhOeXPBNXvMBpcqiwx/gEQQ==}
+
+  '@atproto/syntax@0.4.0':
+    resolution: {integrity: sha512-b9y5ceHS8YKOfP3mdKmwAx5yVj9294UN7FG2XzP6V5aKUdFazEYRnR9m5n5ZQFKa3GNvz7de9guZCJ/sUTcOAA==}
 
   '@atproto/xrpc-server@0.7.11':
     resolution: {integrity: sha512-kywMZMw2FbUFk0xBCtSI1mik+dc3uSvloNndI+N4X/+Qv1FGvoCRMi//9TqaSL13MFevTOynVoMVmaZbnaDG9A==}
@@ -902,8 +911,8 @@ packages:
     peerDependencies:
       react: ^18 || ^19
 
-  '@ts-morph/common@0.17.0':
-    resolution: {integrity: sha512-RMSSvSfs9kb0VzkvQ2NWobwnj7TxCA9vI/IjR9bDHqgAyVbu2T0DN4wiKVqomyDWqO7dPr/tErSfq7urQ1Q37g==}
+  '@ts-morph/common@0.25.0':
+    resolution: {integrity: sha512-kMnZz+vGGHi4GoHnLmMhGNjm44kGtKUXGnOvrKmMwAuvNjM/PgKVGfUnL7IDvK7Jb2QQ82jq3Zmp04Gy+r3Dkg==}
 
   '@tsconfig/node10@1.0.11':
     resolution: {integrity: sha512-DcRjDCujK/kCk/cUe8Xz8ZSpm8mS3mNNpta+jGCA6USEDfktlNvm1+IuZ9eTcDbNk41BHwpHHeW+N1lKCz4zOw==}
@@ -1157,8 +1166,8 @@ packages:
     resolution: {integrity: sha512-BSeNnyus75C4//NQ9gQt1/csTXyo/8Sb+afLAkzAptFuMsod9HFokGNudZpi/oQV73hnVK+sR+5PVRMd+Dr7YQ==}
     engines: {node: '>=12'}
 
-  code-block-writer@11.0.3:
-    resolution: {integrity: sha512-NiujjUFB4SwScJq2bwbYUtXbZhBSlY6vYzm++3Q6oC+U+injTqfPYFK8wS9COOmb2lueqp0ZRB4nK1VYeHgNyw==}
+  code-block-writer@13.0.3:
+    resolution: {integrity: sha512-Oofo0pq3IKnsFtuHqSF7TqBfr71aeyZDVJ0HpmqB7FBM2qEigL0iPONSCZSO9pE9dZTAxANe5XHG9Uy0YMv8cg==}
 
   color-convert@2.0.1:
     resolution: {integrity: sha512-RRECPsj7iu/xb5oKYcsFHSppFNnsj/52OVTRKb4zP5onXwVF3zVmmToNcOfGC+CRDpfK/U584fMg38ZHCaElKQ==}
@@ -1750,10 +1759,6 @@ packages:
     resolution: {integrity: sha512-ethXTt3SGGR+95gudmqJ1eNhRO7eGEGIgYA9vnPatK4/etz2MEVDno5GMCibdMTuBMyElzIlgxMna3K94XDIDQ==}
     engines: {node: 20 || >=22}
 
-  minimatch@5.1.6:
-    resolution: {integrity: sha512-lKwV/1brpG6mBUFHtb7NUmtABCb2WZZmm2wNiOA5hAb8VdCS4B3dtMWyvcoViccwAW/COERjXLt0zP1zXUN26g==}
-    engines: {node: '>=10'}
-
   minimatch@9.0.5:
     resolution: {integrity: sha512-G6T0ZX48xgozx7587koeX9Ys2NYy6Gmv//P89sEte9V9whIapMNF4idKxnW2QtCcLiTWlb/wfCabAtAFWhhBow==}
     engines: {node: '>=16 || 14 >=14.17'}
@@ -1767,11 +1772,6 @@ packages:
 
   mkdirp-classic@0.5.3:
     resolution: {integrity: sha512-gKLcREMhtuZRwRAfqP3RFW+TK4JqApVBtOIftVgjuABpAtpxhPGaDcfvbhNvD0B8iD1oUr/txX35NjcaY6Ns/A==}
-
-  mkdirp@1.0.4:
-    resolution: {integrity: sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==}
-    engines: {node: '>=10'}
-    hasBin: true
 
   ms@2.0.0:
     resolution: {integrity: sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A==}
@@ -2391,8 +2391,8 @@ packages:
   ts-interface-checker@0.1.13:
     resolution: {integrity: sha512-Y/arvbn+rrz3JCKl9C4kVNfTfSm2/mEp5FSz5EsZSANGPSlQrpRI5M4PKF+mJnE52jOO90PnPSc3Ur3bTQw0gA==}
 
-  ts-morph@16.0.0:
-    resolution: {integrity: sha512-jGNF0GVpFj0orFw55LTsQxVYEUOCWBAbR5Ls7fTYE5pQsbW18ssTb/6UXx/GYAEjS+DQTp8VoTw0vqYMiaaQuw==}
+  ts-morph@24.0.0:
+    resolution: {integrity: sha512-2OAOg/Ob5yx9Et7ZX4CvTCc0UFoZHwLEJ+dpDPSUi5TgwwlTlX47w+iFRrEwzUZwYACjq83cgjS/Da50Ga37uw==}
 
   ts-node@10.9.2:
     resolution: {integrity: sha512-f0FFpIdcHgn8zcPSbf1dRevwt047YMnaiJM3u2w2RewrB+fob/zePZcrOyQoLMMO7aBIddLcQIEK5dYjkLnGrQ==}
@@ -2663,6 +2663,13 @@ snapshots:
       uint8arrays: 3.0.0
       zod: 3.24.2
 
+  '@atproto/common-web@0.4.1':
+    dependencies:
+      graphemer: 1.4.0
+      multiformats: 9.9.0
+      uint8arrays: 3.0.0
+      zod: 3.24.2
+
   '@atproto/common@0.4.8':
     dependencies:
       '@atproto/common-web': 0.4.0
@@ -2703,15 +2710,23 @@ snapshots:
       multiformats: 9.9.0
       zod: 3.24.2
 
-  '@atproto/lex-cli@0.6.1':
+  '@atproto/lex-cli@0.8.0':
     dependencies:
-      '@atproto/lexicon': 0.4.7
-      '@atproto/syntax': 0.3.3
+      '@atproto/lexicon': 0.4.10
+      '@atproto/syntax': 0.4.0
       chalk: 4.1.2
       commander: 9.5.0
       prettier: 3.5.2
-      ts-morph: 16.0.0
+      ts-morph: 24.0.0
       yesno: 0.4.0
+      zod: 3.24.2
+
+  '@atproto/lexicon@0.4.10':
+    dependencies:
+      '@atproto/common-web': 0.4.1
+      '@atproto/syntax': 0.4.0
+      iso-datestring-validator: 2.2.2
+      multiformats: 9.9.0
       zod: 3.24.2
 
   '@atproto/lexicon@0.4.7':
@@ -2783,6 +2798,8 @@ snapshots:
       - utf-8-validate
 
   '@atproto/syntax@0.3.3': {}
+
+  '@atproto/syntax@0.4.0': {}
 
   '@atproto/xrpc-server@0.7.11':
     dependencies:
@@ -3224,12 +3241,11 @@ snapshots:
       '@tanstack/query-core': 5.74.9
       react: 18.3.1
 
-  '@ts-morph/common@0.17.0':
+  '@ts-morph/common@0.25.0':
     dependencies:
-      fast-glob: 3.3.3
-      minimatch: 5.1.6
-      mkdirp: 1.0.4
+      minimatch: 9.0.5
       path-browserify: 1.0.1
+      tinyglobby: 0.2.12
 
   '@tsconfig/node10@1.0.11': {}
 
@@ -3531,7 +3547,7 @@ snapshots:
       strip-ansi: 6.0.1
       wrap-ansi: 7.0.0
 
-  code-block-writer@11.0.3: {}
+  code-block-writer@13.0.3: {}
 
   color-convert@2.0.1:
     dependencies:
@@ -4083,10 +4099,6 @@ snapshots:
     dependencies:
       brace-expansion: 2.0.1
 
-  minimatch@5.1.6:
-    dependencies:
-      brace-expansion: 2.0.1
-
   minimatch@9.0.5:
     dependencies:
       brace-expansion: 2.0.1
@@ -4096,8 +4108,6 @@ snapshots:
   minipass@7.1.2: {}
 
   mkdirp-classic@0.5.3: {}
-
-  mkdirp@1.0.4: {}
 
   ms@2.0.0: {}
 
@@ -4719,10 +4729,10 @@ snapshots:
 
   ts-interface-checker@0.1.13: {}
 
-  ts-morph@16.0.0:
+  ts-morph@24.0.0:
     dependencies:
-      '@ts-morph/common': 0.17.0
-      code-block-writer: 11.0.3
+      '@ts-morph/common': 0.25.0
+      code-block-writer: 13.0.3
 
   ts-node@10.9.2(@types/node@22.13.8)(typescript@5.8.2):
     dependencies:

@@ -1,11 +1,13 @@
 import {
   AppBskyActorDefs,
   AppBskyActorProfile,
+  ComWhtwndBlogDefs,
+  SpaceSwshFeedDefs,
   XyzStatusphereDefs,
 } from '@swsh/lexicon'
 
 import { AppContext } from '#/context'
-import { Status } from '#/db'
+import { Entry, Status } from '#/db'
 
 export async function statusToStatusView(
   status: Status,
@@ -21,6 +23,19 @@ export async function statusToStatusView(
         .resolveDidToHandle(status.authorDid)
         .catch(() => 'invalid.handle'),
     },
+  }
+}
+
+export async function entryToEntryView(
+  entry: Entry,
+  ctx: AppContext,
+): Promise<SpaceSwshFeedDefs.EntryView> {
+  return {
+    $type: 'space.swsh.feed.defs#entryView',
+    content: entry.content,
+    title: entry.title ?? undefined,
+    subtitle: entry.subtitle ?? undefined,
+    createdAt: entry.createdAt,
   }
 }
 

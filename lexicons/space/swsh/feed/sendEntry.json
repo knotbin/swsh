@@ -1,0 +1,38 @@
+{
+  "lexicon": 1,
+  "id": "space.swsh.feed.sendEntry",
+  "defs": {
+    "main": {
+      "type": "procedure",
+      "description": "Send an entry.",
+      "input": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": ["entry"],
+          "properties": {
+            "entry": {
+              "type": "string",
+              "minLength": 1,
+              "maxGraphemes": 1,
+              "maxLength": 32
+            }
+          }
+        }
+      },
+      "output": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": ["entry"],
+          "properties": {
+            "entry": {
+              "type": "ref",
+              "ref": "space.swsh.feed.defs#entryView"
+            }
+          }
+        }
+      }
+    }
+  }
+}

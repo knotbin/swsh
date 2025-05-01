@@ -2,11 +2,11 @@
  * GENERATED CODE - DO NOT MODIFY
  */
 import {
-  AuthVerifier,
   createServer as createXrpcServer,
-  StreamAuthVerifier,
-  Options as XrpcOptions,
   Server as XrpcServer,
+  type AuthVerifier,
+  type StreamAuthVerifier,
+  type Options as XrpcOptions,
 } from '@atproto/xrpc-server'
 
 import { schemas } from './lexicons.js'
@@ -24,6 +24,8 @@ import * as ComWhtwndBlogGetAuthorPosts from './types/com/whtwnd/blog/getAuthorP
 import * as ComWhtwndBlogGetEntryMetadataByName from './types/com/whtwnd/blog/getEntryMetadataByName.js'
 import * as ComWhtwndBlogGetMentionsByEntry from './types/com/whtwnd/blog/getMentionsByEntry.js'
 import * as ComWhtwndBlogNotifyOfNewEntry from './types/com/whtwnd/blog/notifyOfNewEntry.js'
+import * as SpaceSwshFeedGetEntries from './types/space/swsh/feed/getEntries.js'
+import * as SpaceSwshFeedSendEntry from './types/space/swsh/feed/sendEntry.js'
 import * as XyzStatusphereGetStatuses from './types/xyz/statusphere/getStatuses.js'
 import * as XyzStatusphereGetUser from './types/xyz/statusphere/getUser.js'
 import * as XyzStatusphereSendStatus from './types/xyz/statusphere/sendStatus.js'
@@ -36,12 +38,14 @@ export class Server {
   xrpc: XrpcServer
   xyz: XyzNS
   com: ComNS
+  space: SpaceNS
   app: AppNS
 
   constructor(options?: XrpcOptions) {
     this.xrpc = createXrpcServer(schemas, options)
     this.xyz = new XyzNS(this)
     this.com = new ComNS(this)
+    this.space = new SpaceNS(this)
     this.app = new AppNS(this)
   }
 }
@@ -295,6 +299,56 @@ export class ComWhtwndBlogNS {
     >,
   ) {
     const nsid = 'com.whtwnd.blog.notifyOfNewEntry' // @ts-ignore
+    return this._server.xrpc.method(nsid, cfg)
+  }
+}
+
+export class SpaceNS {
+  _server: Server
+  swsh: SpaceSwshNS
+
+  constructor(server: Server) {
+    this._server = server
+    this.swsh = new SpaceSwshNS(server)
+  }
+}
+
+export class SpaceSwshNS {
+  _server: Server
+  feed: SpaceSwshFeedNS
+
+  constructor(server: Server) {
+    this._server = server
+    this.feed = new SpaceSwshFeedNS(server)
+  }
+}
+
+export class SpaceSwshFeedNS {
+  _server: Server
+
+  constructor(server: Server) {
+    this._server = server
+  }
+
+  getEntries<AV extends AuthVerifier>(
+    cfg: ConfigOf<
+      AV,
+      SpaceSwshFeedGetEntries.Handler<ExtractAuth<AV>>,
+      SpaceSwshFeedGetEntries.HandlerReqCtx<ExtractAuth<AV>>
+    >,
+  ) {
+    const nsid = 'space.swsh.feed.getEntries' // @ts-ignore
+    return this._server.xrpc.method(nsid, cfg)
+  }
+
+  sendEntry<AV extends AuthVerifier>(
+    cfg: ConfigOf<
+      AV,
+      SpaceSwshFeedSendEntry.Handler<ExtractAuth<AV>>,
+      SpaceSwshFeedSendEntry.HandlerReqCtx<ExtractAuth<AV>>
+    >,
+  ) {
+    const nsid = 'space.swsh.feed.sendEntry' // @ts-ignore
     return this._server.xrpc.method(nsid, cfg)
   }
 }

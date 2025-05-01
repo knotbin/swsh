@@ -1,4 +1,8 @@
-import { XyzStatusphereStatus } from '@swsh/lexicon'
+import {
+  ComWhtwndBlogEntry,
+  SpaceSwshFeedEntry,
+  XyzStatusphereStatus,
+} from '@swsh/lexicon'
 import pino from 'pino'
 import WebSocket from 'ws'
 
@@ -38,49 +42,108 @@ export async function createJetstreamIngester(db: Database) {
     },
     handleEvent: async (evt) => {
       // ignore account and identity events
-      if (
-        evt.kind !== 'commit' ||
-        evt.commit.collection !== 'xyz.statusphere.status'
-      )
-        return
+      if (evt.kind !== 'commit') return
 
       const now = new Date()
       const uri = `at://${evt.did}/${evt.commit.collection}/${evt.commit.rkey}`
 
-      if (
-        (evt.commit.operation === 'create' ||
-          evt.commit.operation === 'update') &&
-        XyzStatusphereStatus.isRecord(evt.commit.record)
-      ) {
-        const validatedRecord = XyzStatusphereStatus.validateRecord(
-          evt.commit.record,
-        )
-        if (!validatedRecord.success) return
+      if (evt.commit.collection === 'xyz.statusphere.status') {
+        if (evt.commit.operation === 'delete') {
+          await db.deleteFrom('status').where('uri', '=', uri).execute()
+          return
+        }
+        if (
+          evt.commit.operation === 'create' ||
+          evt.commit.operation === 'update'
+        ) {
+          if (!XyzStatusphereStatus.isRecord(evt.commit.record)) return
 
-        await db
-          .insertInto('status')
-          .values({
-            uri,
-            authorDid: evt.did,
-            status: validatedRecord.value.status,
-            createdAt: validatedRecord.value.createdAt,
-            indexedAt: now.toISOString(),
-          })
-          .onConflict((oc) =>
-            oc.column('uri').doUpdateSet({
-              status: validatedRecord.value.status,
-              indexedAt: now.toISOString(),
-            }),
+          const validatedRecord = XyzStatusphereStatus.validateRecord(
+            evt.commit.record,
           )
-          .execute()
-      } else if (evt.commit.operation === 'delete') {
-        await db.deleteFrom('status').where('uri', '=', uri).execute()
+          if (!validatedRecord.success) return
+
+          await db
+            .insertInto('status')
+            .values({
+              uri,
+              authorDid: evt.did,
+              status: validatedRecord.value.status,
+              createdAt: validatedRecord.value.createdAt,
+              indexedAt: now.toISOString(),
+            })
+            .onConflict((oc) =>
+              oc.column('uri').doUpdateSet({
+                status: validatedRecord.value.status,
+                indexedAt: now.toISOString(),
+              }),
+            )
+            .execute()
+        }
+      } else if (evt.commit.collection === 'space.swsh.feed.entry') {
+        if (evt.commit.operation === 'delete') {
+          await db.deleteFrom('entry').where('uri', '=', uri).execute()
+          return
+        }
+        if (
+          evt.commit.operation === 'create' ||
+          evt.commit.operation === 'update'
+        ) {
+          logger.info(
+            { record: evt.commit.record },
+            'attempting to validate feed entry',
+          )
+
+          if (!SpaceSwshFeedEntry.isRecord(evt.commit.record)) {
+            logger.info(
+              { record: evt.commit.record },
+              'record failed isRecord check',
+            )
+            return
+          }
+
+          const validatedRecord = SpaceSwshFeedEntry.validateRecord(
+            evt.commit.record,
+          )
+          if (!validatedRecord.success) {
+            logger.info('record failed validation')
+            return
+          }
+
+          logger.info('feed entry validated successfully')
+
+          await db
+            .insertInto('entry')
+            .values({
+              uri,
+              authorDid: evt.did,
+              title: validatedRecord.value.title ?? null,
+              subtitle: validatedRecord.value.subtitle ?? null,
+              content: validatedRecord.value.content,
+              createdAt: validatedRecord.value.createdAt ?? now.toISOString(),
+              indexedAt: now.toISOString(),
+            })
+            .onConflict((oc) =>
+              oc.column('uri').doUpdateSet({
+                title: validatedRecord.value.title ?? null,
+                subtitle: validatedRecord.value.subtitle ?? null,
+                content: validatedRecord.value.content,
+                createdAt: validatedRecord.value.createdAt ?? now.toISOString(),
+                indexedAt: now.toISOString(),
+              }),
+            )
+            .execute()
+        }
       }
     },
     onError: (err) => {
       logger.error({ err }, 'error during jetstream ingestion')
     },
-    wantedCollections: ['xyz.statusphere.status'],
+    wantedCollections: [
+      'xyz.statusphere.status',
+      'com.whtwnd.blog.entry',
+      'space.swsh.feed.entry',
+    ],
   })
 }
 
@@ -124,11 +187,14 @@ export class Jetstream<T> {
 
   constructUrlWithQuery = (): string => {
     const params = new URLSearchParams()
-    params.append('wantedCollections', this.wantedCollections.join(','))
+    this.wantedCollections.forEach((collection) => {
+      params.append('wantedCollections', collection)
+    })
     if (this.cursor !== undefined) {
       params.append('cursor', this.cursor.toString())
     }
-    return `${this.instanceUrl}/subscribe?${params.toString()}`
+    const url = `${this.instanceUrl}/subscribe?${params.toString()}`
+    return url
   }
 
   start() {

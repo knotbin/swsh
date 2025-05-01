@@ -1,7 +1,11 @@
 /**
  * GENERATED CODE - DO NOT MODIFY
  */
-import { FetchHandler, FetchHandlerOptions, XrpcClient } from '@atproto/xrpc'
+import {
+  XrpcClient,
+  type FetchHandler,
+  type FetchHandlerOptions,
+} from '@atproto/xrpc'
 import { CID } from 'multiformats/cid'
 
 import { schemas } from './lexicons.js'
@@ -26,12 +30,16 @@ import * as ComWhtwndBlogGetAuthorPosts from './types/com/whtwnd/blog/getAuthorP
 import * as ComWhtwndBlogGetEntryMetadataByName from './types/com/whtwnd/blog/getEntryMetadataByName.js'
 import * as ComWhtwndBlogGetMentionsByEntry from './types/com/whtwnd/blog/getMentionsByEntry.js'
 import * as ComWhtwndBlogNotifyOfNewEntry from './types/com/whtwnd/blog/notifyOfNewEntry.js'
+import * as SpaceSwshFeedDefs from './types/space/swsh/feed/defs.js'
+import * as SpaceSwshFeedEntry from './types/space/swsh/feed/entry.js'
+import * as SpaceSwshFeedGetEntries from './types/space/swsh/feed/getEntries.js'
+import * as SpaceSwshFeedSendEntry from './types/space/swsh/feed/sendEntry.js'
 import * as XyzStatusphereDefs from './types/xyz/statusphere/defs.js'
 import * as XyzStatusphereGetStatuses from './types/xyz/statusphere/getStatuses.js'
 import * as XyzStatusphereGetUser from './types/xyz/statusphere/getUser.js'
 import * as XyzStatusphereSendStatus from './types/xyz/statusphere/sendStatus.js'
 import * as XyzStatusphereStatus from './types/xyz/statusphere/status.js'
-import { OmitKey, Un$Typed } from './util.js'
+import { type OmitKey, type Un$Typed } from './util.js'
 
 export * as XyzStatusphereDefs from './types/xyz/statusphere/defs.js'
 export * as XyzStatusphereGetStatuses from './types/xyz/statusphere/getStatuses.js'
@@ -57,18 +65,24 @@ export * as ComWhtwndBlogGetAuthorPosts from './types/com/whtwnd/blog/getAuthorP
 export * as ComWhtwndBlogGetEntryMetadataByName from './types/com/whtwnd/blog/getEntryMetadataByName.js'
 export * as ComWhtwndBlogGetMentionsByEntry from './types/com/whtwnd/blog/getMentionsByEntry.js'
 export * as ComWhtwndBlogNotifyOfNewEntry from './types/com/whtwnd/blog/notifyOfNewEntry.js'
+export * as SpaceSwshFeedDefs from './types/space/swsh/feed/defs.js'
+export * as SpaceSwshFeedEntry from './types/space/swsh/feed/entry.js'
+export * as SpaceSwshFeedGetEntries from './types/space/swsh/feed/getEntries.js'
+export * as SpaceSwshFeedSendEntry from './types/space/swsh/feed/sendEntry.js'
 export * as AppBskyActorDefs from './types/app/bsky/actor/defs.js'
 export * as AppBskyActorProfile from './types/app/bsky/actor/profile.js'
 
 export class AtpBaseClient extends XrpcClient {
   xyz: XyzNS
   com: ComNS
+  space: SpaceNS
   app: AppNS
 
   constructor(options: FetchHandler | FetchHandlerOptions) {
     super(options, schemas)
     this.xyz = new XyzNS(this)
     this.com = new ComNS(this)
+    this.space = new SpaceNS(this)
     this.app = new AppNS(this)
   }
 
@@ -90,11 +104,11 @@ export class XyzNS {
 
 export class XyzStatusphereNS {
   _client: XrpcClient
-  status: StatusRecord
+  status: XyzStatusphereStatusRecord
 
   constructor(client: XrpcClient) {
     this._client = client
-    this.status = new StatusRecord(client)
+    this.status = new XyzStatusphereStatusRecord(client)
   }
 
   getStatuses(
@@ -124,7 +138,7 @@ export class XyzStatusphereNS {
   }
 }
 
-export class StatusRecord {
+export class XyzStatusphereStatusRecord {
   _client: XrpcClient
 
   constructor(client: XrpcClient) {
@@ -342,11 +356,11 @@ export class ComWhtwndNS {
 
 export class ComWhtwndBlogNS {
   _client: XrpcClient
-  entry: EntryRecord
+  entry: ComWhtwndBlogEntryRecord
 
   constructor(client: XrpcClient) {
     this._client = client
-    this.entry = new EntryRecord(client)
+    this.entry = new ComWhtwndBlogEntryRecord(client)
   }
 
   getAuthorPosts(
@@ -397,7 +411,7 @@ export class ComWhtwndBlogNS {
   }
 }
 
-export class EntryRecord {
+export class ComWhtwndBlogEntryRecord {
   _client: XrpcClient
 
   constructor(client: XrpcClient) {
@@ -458,6 +472,116 @@ export class EntryRecord {
   }
 }
 
+export class SpaceNS {
+  _client: XrpcClient
+  swsh: SpaceSwshNS
+
+  constructor(client: XrpcClient) {
+    this._client = client
+    this.swsh = new SpaceSwshNS(client)
+  }
+}
+
+export class SpaceSwshNS {
+  _client: XrpcClient
+  feed: SpaceSwshFeedNS
+
+  constructor(client: XrpcClient) {
+    this._client = client
+    this.feed = new SpaceSwshFeedNS(client)
+  }
+}
+
+export class SpaceSwshFeedNS {
+  _client: XrpcClient
+  entry: SpaceSwshFeedEntryRecord
+
+  constructor(client: XrpcClient) {
+    this._client = client
+    this.entry = new SpaceSwshFeedEntryRecord(client)
+  }
+
+  getEntries(
+    params?: SpaceSwshFeedGetEntries.QueryParams,
+    opts?: SpaceSwshFeedGetEntries.CallOptions,
+  ): Promise<SpaceSwshFeedGetEntries.Response> {
+    return this._client.call(
+      'space.swsh.feed.getEntries',
+      params,
+      undefined,
+      opts,
+    )
+  }
+
+  sendEntry(
+    data?: SpaceSwshFeedSendEntry.InputSchema,
+    opts?: SpaceSwshFeedSendEntry.CallOptions,
+  ): Promise<SpaceSwshFeedSendEntry.Response> {
+    return this._client.call('space.swsh.feed.sendEntry', opts?.qp, data, opts)
+  }
+}
+
+export class SpaceSwshFeedEntryRecord {
+  _client: XrpcClient
+
+  constructor(client: XrpcClient) {
+    this._client = client
+  }
+
+  async list(
+    params: OmitKey<ComAtprotoRepoListRecords.QueryParams, 'collection'>,
+  ): Promise<{
+    cursor?: string
+    records: { uri: string; value: SpaceSwshFeedEntry.Record }[]
+  }> {
+    const res = await this._client.call('com.atproto.repo.listRecords', {
+      collection: 'space.swsh.feed.entry',
+      ...params,
+    })
+    return res.data
+  }
+
+  async get(
+    params: OmitKey<ComAtprotoRepoGetRecord.QueryParams, 'collection'>,
+  ): Promise<{ uri: string; cid: string; value: SpaceSwshFeedEntry.Record }> {
+    const res = await this._client.call('com.atproto.repo.getRecord', {
+      collection: 'space.swsh.feed.entry',
+      ...params,
+    })
+    return res.data
+  }
+
+  async create(
+    params: OmitKey<
+      ComAtprotoRepoCreateRecord.InputSchema,
+      'collection' | 'record'
+    >,
+    record: Un$Typed<SpaceSwshFeedEntry.Record>,
+    headers?: Record<string, string>,
+  ): Promise<{ uri: string; cid: string }> {
+    const collection = 'space.swsh.feed.entry'
+    const res = await this._client.call(
+      'com.atproto.repo.createRecord',
+      undefined,
+      { collection, ...params, record: { ...record, $type: collection } },
+      { encoding: 'application/json', headers },
+    )
+    return res.data
+  }
+
+  async delete(
+    params: OmitKey<ComAtprotoRepoDeleteRecord.InputSchema, 'collection'>,
+    headers?: Record<string, string>,
+  ): Promise<void> {
+    await this._client.call(
+      'com.atproto.repo.deleteRecord',
+      undefined,
+      { collection: 'space.swsh.feed.entry', ...params },
+      { headers },
+    )
+  }
+}
+
 export class AppNS {
   _client: XrpcClient
   bsky: AppBskyNS
@@ -480,15 +604,15 @@ export class AppBskyNS {
 
 export class AppBskyActorNS {
   _client: XrpcClient
-  profile: ProfileRecord
+  profile: AppBskyActorProfileRecord
 
   constructor(client: XrpcClient) {
     this._client = client
-    this.profile = new ProfileRecord(client)
+    this.profile = new AppBskyActorProfileRecord(client)
   }
 }
 
-export class ProfileRecord {
+export class AppBskyActorProfileRecord {
   _client: XrpcClient
 
   constructor(client: XrpcClient) {

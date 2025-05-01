@@ -2,13 +2,13 @@
  * GENERATED CODE - DO NOT MODIFY
  */
 import {
-  LexiconDoc,
   Lexicons,
   ValidationError,
-  ValidationResult,
+  type LexiconDoc,
+  type ValidationResult,
 } from '@atproto/lexicon'
 
-import { $Typed, is$typed, maybe$typed } from './util.js'
+import { is$typed, maybe$typed, type $Typed } from './util.js'
 
 export const schemaDict = {
   XyzStatusphereDefs: {
@@ -1172,12 +1172,6 @@ export const schemaDict = {
             type: 'string',
             format: 'uri',
           },
-          width: {
-            type: 'integer',
-          },
-          height: {
-            type: 'integer',
-          },
         },
       },
       blobMetadata: {
@@ -1186,7 +1180,19 @@ export const schemaDict = {
         properties: {
           blobref: {
             type: 'blob',
-            accept: ['*/*'],
+            accept: [
+              'image/png',
+              'image/jpeg',
+              'image/gif',
+              'image/webp',
+              'image/avif',
+              'image/heic',
+              'image/heif',
+            ],
+            maxSize: 1000000,
+          },
+          encoding: {
+            type: 'string',
           },
           name: {
             type: 'string',
@@ -1411,6 +1417,213 @@ export const schemaDict = {
       },
     },
   },
+  SpaceSwshFeedDefs: {
+    lexicon: 1,
+    id: 'space.swsh.feed.defs',
+    defs: {
+      entryView: {
+        type: 'object',
+        required: ['content'],
+        properties: {
+          title: {
+            type: 'string',
+            maxLength: 1000,
+          },
+          subtitle: {
+            type: 'string',
+            maxLength: 1000,
+          },
+          content: {
+            type: 'string',
+            maxLength: 100000,
+          },
+          createdAt: {
+            type: 'string',
+            format: 'datetime',
+          },
+        },
+      },
+      reply: {
+        type: 'object',
+        required: ['content', 'createdAt'],
+        properties: {
+          content: {
+            type: 'string',
+            maxLength: 1000,
+          },
+          reply: {
+            type: 'ref',
+            ref: 'lex:space.swsh.feed.defs#replyRef',
+          },
+          createdAt: {
+            type: 'string',
+            format: 'datetime',
+          },
+        },
+      },
+      replyRef: {
+        type: 'object',
+        required: ['root', 'parent'],
+        properties: {
+          root: {
+            type: 'ref',
+            ref: 'lex:space.swsh.feed.defs#entryView',
+          },
+          parent: {
+            type: 'ref',
+            ref: 'lex:space.swsh.feed.defs#reply',
+          },
+          grandparentAuthor: {
+            type: 'string',
+            format: 'did',
+          },
+        },
+      },
+    },
+  },
+  SpaceSwshFeedEntry: {
+    lexicon: 1,
+    id: 'space.swsh.feed.entry',
+    defs: {
+      main: {
+        type: 'record',
+        description: 'A declaration of a post.',
+        key: 'tid',
+        record: {
+          type: 'object',
+          required: ['content'],
+          properties: {
+            content: {
+              type: 'string',
+              maxLength: 100000,
+            },
+            createdAt: {
+              type: 'string',
+              format: 'datetime',
+            },
+            title: {
+              type: 'string',
+              maxLength: 1000,
+            },
+            subtitle: {
+              type: 'string',
+              maxLength: 1000,
+            },
+            banner: {
+              type: 'blob',
+              accept: [
+                'image/png',
+                'image/jpeg',
+                'image/gif',
+                'image/webp',
+                'image/avif',
+                'image/heic',
+                'image/heif',
+              ],
+              maxSize: 1000000,
+            },
+            blobs: {
+              type: 'array',
+              items: {
+                type: 'blob',
+                accept: [
+                  'image/png',
+                  'image/jpeg',
+                  'image/gif',
+                  'image/webp',
+                  'image/avif',
+                  'image/heic',
+                  'image/heif',
+                ],
+                maxSize: 1000000,
+              },
+            },
+            visibility: {
+              type: 'string',
+              enum: ['public', 'url', 'author'],
+              default: 'public',
+              description: 'Tells the visibility of the article to AppView.',
+            },
+          },
+        },
+      },
+    },
+  },
+  SpaceSwshFeedGetEntries: {
+    lexicon: 1,
+    id: 'space.swsh.feed.getEntries',
+    defs: {
+      main: {
+        type: 'query',
+        description: 'Get a list of the most recent entries.',
+        parameters: {
+          type: 'params',
+          properties: {
+            limit: {
+              type: 'integer',
+              minimum: 1,
+              maximum: 100,
+              default: 50,
+            },
+          },
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['entries'],
+            properties: {
+              entries: {
+                type: 'array',
+                items: {
+                  type: 'ref',
+                  ref: 'lex:space.swsh.feed.defs#entryView',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  SpaceSwshFeedSendEntry: {
+    lexicon: 1,
+    id: 'space.swsh.feed.sendEntry',
+    defs: {
+      main: {
+        type: 'procedure',
+        description: 'Send an entry.',
+        input: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['entry'],
+            properties: {
+              entry: {
+                type: 'string',
+                minLength: 1,
+                maxGraphemes: 1,
+                maxLength: 32,
+              },
+            },
+          },
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['entry'],
+            properties: {
+              entry: {
+                type: 'ref',
+                ref: 'lex:space.swsh.feed.defs#entryView',
+              },
+            },
+          },
+        },
+      },
+    },
+  },
   AppBskyActorDefs: {
     lexicon: 1,
     id: 'app.bsky.actor.defs',
@@ -1520,7 +1733,6 @@ export const schemaDict = {
     },
   },
 } as const satisfies Record<string, LexiconDoc>
-
 export const schemas = Object.values(schemaDict) satisfies LexiconDoc[]
 export const lexicons: Lexicons = new Lexicons(schemas)
 
@@ -1577,6 +1789,10 @@ export const ids = {
   ComWhtwndBlogGetEntryMetadataByName: 'com.whtwnd.blog.getEntryMetadataByName',
   ComWhtwndBlogGetMentionsByEntry: 'com.whtwnd.blog.getMentionsByEntry',
   ComWhtwndBlogNotifyOfNewEntry: 'com.whtwnd.blog.notifyOfNewEntry',
+  SpaceSwshFeedDefs: 'space.swsh.feed.defs',
+  SpaceSwshFeedEntry: 'space.swsh.feed.entry',
+  SpaceSwshFeedGetEntries: 'space.swsh.feed.getEntries',
+  SpaceSwshFeedSendEntry: 'space.swsh.feed.sendEntry',
   AppBskyActorDefs: 'app.bsky.actor.defs',
   AppBskyActorProfile: 'app.bsky.actor.profile',
 } as const
