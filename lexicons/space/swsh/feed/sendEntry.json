@@ -4,7 +4,7 @@
   "defs": {
     "main": {
       "type": "procedure",
-      "description": "Send an entry.",
+      "description": "Creates or updates an entry.",
       "input": {
         "encoding": "application/json",
         "schema": {
@@ -35,6 +35,10 @@
               "enum": ["public", "url", "author"],
               "default": "public",
               "description": "Tells the visibility of the article to AppView."
+            },
+            "rkey": {
+              "type": "string",
+              "description": "If updating, the rkey of the existing entry."
             }
           }
         }
@@ -45,6 +49,14 @@
           "type": "object",
           "required": ["entry"],
           "properties": {
+            "uri": {
+              "type": "string",
+              "description": "The URI of the entry."
+            },
+            "cid": {
+              "type": "string",
+              "description": "The CID of the entry."
+            },
             "entry": {
               "type": "ref",
               "ref": "space.swsh.feed.defs#entryView"

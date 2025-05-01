@@ -8,6 +8,7 @@ import sendStatus from './lexicons/sendStatus'
 
 export * as health from './health'
 export * as oauth from './oauth'
+export * as wellKnown from './well-known'
 
 export default function (server: Server, ctx: AppContext) {
   getEntries(server, ctx)

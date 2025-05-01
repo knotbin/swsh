@@ -1,11 +1,11 @@
 import { SpaceSwshFeedDefs } from '@swsh/lexicon'
 import { formatDistanceToNow } from 'date-fns'
 
-interface EntryViewProps {
+interface EntryListItemProps {
   entry: SpaceSwshFeedDefs.EntryView
 }
 
-export default function EntryView({ entry }: EntryViewProps) {
+export default function EntryListItem({ entry }: EntryListItemProps) {
   const createdAt = entry.createdAt || new Date().toISOString()
 
   return (

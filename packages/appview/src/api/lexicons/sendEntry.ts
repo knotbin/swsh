@@ -22,17 +22,18 @@ export default function (server: Server, ctx: AppContext) {
       }
 
       // Construct & validate their entry record
-      const rkey = TID.nextStr()
+      const rkey = input.body.rkey ?? TID.nextStr()
       const record = {
         $type: 'space.swsh.feed.entry',
         content: input.body.content,
         title: input.body.title ?? null,
         subtitle: input.body.subtitle ?? null,
-        facets: input.body.facets?.map(f => ({
-          byteStart: f.index.byteStart,
-          byteEnd: f.index.byteEnd,
-          type: f.features[0].$type.split('.').pop()?.toLowerCase() ?? ''
-        })) ?? [],
+        facets:
+          input.body.facets?.map((f) => ({
+            byteStart: f.index.byteStart,
+            byteEnd: f.index.byteEnd,
+            type: f.features[0].$type.split('.').pop()?.toLowerCase() ?? '',
+          })) ?? [],
         createdAt: new Date().toISOString(),
         visibility: input.body.visibility ?? 'public',
       }
@@ -43,6 +44,7 @@ export default function (server: Server, ctx: AppContext) {
       }
 
       let uri
+      let cid
       try {
         // Write the entry record to the user's repository
         const response = await agent.com.atproto.repo.putRecord({
@@ -53,6 +55,7 @@ export default function (server: Server, ctx: AppContext) {
           validate: false,
         })
         uri = response.data.uri
+        cid = response.data.cid
       } catch (err) {
         throw new UpstreamFailureError('Failed to write record')
       }
@@ -90,6 +93,8 @@ export default function (server: Server, ctx: AppContext) {
       return {
         encoding: 'application/json',
         body: {
+          uri,
+          cid,
           entry: await entryToEntryView(optimisticEntry, ctx),
         },
       }

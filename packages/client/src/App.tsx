@@ -4,7 +4,7 @@ import { AuthProvider } from '#/hooks/useAuth'
 import HomePage from '#/pages/HomePage'
 import LoginPage from '#/pages/LoginPage'
 import OAuthCallbackPage from '#/pages/OAuthCallbackPage'
-import CreateEntry from '#/pages/CreateEntry'
+import EditEntry from '#/pages/EditEntry'
 
 const queryClient = new QueryClient()
 
@@ -13,12 +13,12 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <div className="min-h-screen">
-          <div className="max-w-4xl mx-auto p-4 w-full">
+          <div className="mx-auto p-4 w-full">
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/oauth-callback" element={<OAuthCallbackPage />} />
-              <Route path="/create" element={<CreateEntry />} />
+              <Route path="/edit" element={<EditEntry />} />
             </Routes>
           </div>
         </div>

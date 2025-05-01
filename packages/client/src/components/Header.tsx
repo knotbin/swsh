@@ -14,7 +14,7 @@ const Header = () => {
   }
 
   return (
-    <header className="mb-8 border-b border-gray-200 dark:border-gray-700 pb-4">
+    <header className="border-b border-gray-200 dark:border-gray-700 pb-4">
       <div className="flex justify-between items-center">
         <h1 className="m-0 text-2xl font-bold">
           <Link
@@ -41,14 +41,14 @@ const Header = () => {
               </span>
               <button
                 onClick={handleLogout}
-                className="px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-md transition-colors"
+                className="px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors"
               >
                 Logout
               </button>
             </div>
           ) : (
             <Link to="/login">
-              <button className="px-4 py-2 bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 rounded-md transition-colors">
+              <button className="px-4 py-2 bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 transition-colors">
                 Login
               </button>
             </Link>

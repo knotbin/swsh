@@ -16,4 +16,5 @@ export const env = cleanEnv(process.env, {
   SERVICE_DID: str({ default: undefined }),
   PUBLIC_URL: str({ devDefault: '' }),
   JETSTREAM_INSTANCE: str({ default: 'wss://jetstream.sprk.so' }),
+  APPVIEW_K256_PRIVATE_KEY_HEX: str(),
 })

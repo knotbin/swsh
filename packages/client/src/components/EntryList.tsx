@@ -1,8 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
-import { SpaceSwshFeedDefs } from '@swsh/lexicon'
 
 import api from '#/services/api'
-import EntryView from './EntryView'
+import EntryListItem from './EntryListItem'
 
 export default function EntryList() {
   const { data, isLoading, error } = useQuery({
@@ -29,7 +28,7 @@ export default function EntryList() {
     )
   }
 
-  if (!data?.entries?.length) {
+  if (!data?.data.entries?.length) {
     return (
       <div className="text-center py-12 text-gray-500 dark:text-gray-400">
         No entries yet. Be the first to create one!
@@ -39,8 +38,8 @@ export default function EntryList() {
 
   return (
     <div>
-      {data.entries.map((entry) => (
-        <EntryView key={entry.createdAt} entry={entry} />
+      {data.data.entries.map((entry) => (
+        <EntryListItem key={entry.createdAt} entry={entry} />
       ))}
     </div>
   )

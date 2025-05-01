@@ -25,7 +25,7 @@ const HomePage = () => {
           <p className="text-red-500 mb-4">{error}</p>
           <a
             href="/login"
-            className="inline-block px-4 py-2 bg-blue-500 dark:bg-blue-600 text-white rounded-md hover:bg-blue-600 dark:hover:bg-blue-700 transition-colors"
+            className="inline-block px-4 py-2 bg-blue-500 dark:bg-blue-600 text-white hover:bg-blue-600 dark:hover:bg-blue-700 transition-colors"
           >
             Try logging in again
           </a>
@@ -38,14 +38,14 @@ const HomePage = () => {
     <div className="flex flex-col gap-8 pb-12">
       <Header />
 
-      <div className="flex justify-between items-center">
+      <div className="flex max-w-4xl mx-auto p-4 w-full justify-between items-center">
         <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
           Recent Entries
         </h2>
         {user && (
           <button
-            onClick={() => navigate('/create')}
-            className="px-4 py-2 bg-blue-500 dark:bg-blue-600 text-white rounded-md hover:bg-blue-600 dark:hover:bg-blue-700 transition-colors"
+            onClick={() => navigate('/edit')}
+            className="px-4 py-2 bg-blue-500 dark:bg-blue-600 text-white hover:bg-blue-600 dark:hover:bg-blue-700 transition-colors"
           >
             New Entry
           </button>

@@ -38,6 +38,9 @@ importers:
       '@atproto/common':
         specifier: ^0.4.8
         version: 0.4.8
+      '@atproto/crypto':
+        specifier: ^0.4.4
+        version: 0.4.4
       '@atproto/identity':
         specifier: ^0.4.6
         version: 0.4.6

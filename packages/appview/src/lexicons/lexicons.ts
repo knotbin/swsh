@@ -1602,7 +1602,7 @@ export const schemaDict = {
     defs: {
       main: {
         type: 'procedure',
-        description: 'Send an entry.',
+        description: 'Creates or updates an entry.',
         input: {
           encoding: 'application/json',
           schema: {
@@ -1634,6 +1634,10 @@ export const schemaDict = {
                 default: 'public',
                 description: 'Tells the visibility of the article to AppView.',
               },
+              rkey: {
+                type: 'string',
+                description: 'If updating, the rkey of the existing entry.',
+              },
             },
           },
         },
@@ -1643,6 +1647,14 @@ export const schemaDict = {
             type: 'object',
             required: ['entry'],
             properties: {
+              uri: {
+                type: 'string',
+                description: 'The URI of the entry.',
+              },
+              cid: {
+                type: 'string',
+                description: 'The CID of the entry.',
+              },
               entry: {
                 type: 'ref',
                 ref: 'lex:space.swsh.feed.defs#entryView',

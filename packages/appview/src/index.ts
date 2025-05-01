@@ -8,7 +8,7 @@ import cors from 'cors'
 import express from 'express'
 import { pino } from 'pino'
 
-import API, { health, oauth } from '#/api'
+import API, { health, oauth, wellKnown } from '#/api'
 import { createClient } from '#/auth/client'
 import { AppContext } from '#/context'
 import { createDb, migrateToLatest } from '#/db'
@@ -73,6 +73,7 @@ export class Server {
     app.use(oauth.createRouter(ctx))
     app.use(server.xrpc.router)
     app.use(error.createHandler(ctx))
+    app.use(wellKnown.createRouter(ctx))
 
     // Serve static files from the frontend build - prod only
     if (env.isProduction) {

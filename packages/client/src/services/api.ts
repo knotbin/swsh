@@ -5,9 +5,9 @@ import type {
   XyzStatusphereSendStatus,
 } from '@swsh/lexicon'
 
-class StatusphereAgent extends Lexicon.AtpBaseClient {
+class SwshAgent extends Lexicon.AtpBaseClient {
   constructor() {
-    super(StatusphereAgent.fetchHandler)
+    super(SwshAgent.fetchHandler)
   }
 
   private static fetchHandler: Lexicon.AtpBaseClient['fetchHandler'] = (
@@ -24,7 +24,7 @@ class StatusphereAgent extends Lexicon.AtpBaseClient {
   }
 }
 
-const agent = new StatusphereAgent()
+const agent = new SwshAgent()
 
 // API service
 export const api = {
@@ -77,14 +77,31 @@ export const api = {
   },
 
   // Send entry
-  async sendEntry(data: { content: string; title?: string; subtitle?: string }) {
+  async sendEntry(data: { content: string; title?: string; subtitle?: string; rkey?: string }) {
     const response = await agent.space.swsh.feed.sendEntry(data)
+    console.log('sendEntry response: ', response)
     return response.data
   },
 
   // Get entries
-  async getEntries() {
-    const response = await agent.space.swsh.feed.getEntries()
+  getEntries() {
+    return agent.space.swsh.feed.getEntries()
+  },
+
+  // Delete record
+  deleteRecord(params: { repo: string; collection: string; rkey: string }) {
+    return agent.com.atproto.repo.deleteRecord(params)
+  },
+
+  // Get entry
+  async getEntry(params: { repo: string; rkey: string }) {
+    const getRecordParams = {
+      repo: params.repo,
+      collection: 'space.swsh.feed.entry',
+      rkey: params.rkey,
+    }
+    const response = await agent.com.atproto.repo.getRecord(getRecordParams)
+    console.log('getEntry response: ', response)
     return response.data
   },
 }
