@@ -9,13 +9,32 @@
         "encoding": "application/json",
         "schema": {
           "type": "object",
-          "required": ["entry"],
+          "required": ["content"],
           "properties": {
-            "entry": {
+            "title": {
               "type": "string",
-              "minLength": 1,
-              "maxGraphemes": 1,
-              "maxLength": 32
+              "maxLength": 1000
+            },
+            "subtitle": {
+              "type": "string",
+              "maxLength": 1000
+            },
+            "content": {
+              "type": "string",
+              "maxLength": 100000
+            },
+            "facets": {
+              "type": "array",
+              "items": {
+                "type": "ref",
+                "ref": "space.swsh.richtext.facet"
+              }
+            },
+            "visibility": {
+              "type": "string",
+              "enum": ["public", "url", "author"],
+              "default": "public",
+              "description": "Tells the visibility of the article to AppView."
             }
           }
         }

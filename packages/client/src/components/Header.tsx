@@ -21,7 +21,7 @@ const Header = () => {
             to="/"
             className="no-underline text-inherit hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
           >
-            Statusphere
+            Swish
           </Link>
         </h1>
         <nav>

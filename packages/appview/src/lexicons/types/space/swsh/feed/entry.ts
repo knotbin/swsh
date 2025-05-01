@@ -10,6 +10,7 @@ import {
   type $Typed,
   type OmitKey,
 } from '../../../../util'
+import type * as SpaceSwshRichtextFacet from '../richtext/facet.js'
 
 const is$typed = _is$typed,
   validate = _validate
@@ -17,7 +18,10 @@ const id = 'space.swsh.feed.entry'
 
 export interface Record {
   $type: 'space.swsh.feed.entry'
+  /** The primary post content. */
   content: string
+  /** Annotations of text (mentions, URLs, hashtags, etc) */
+  facets?: SpaceSwshRichtextFacet.Main[]
   createdAt?: string
   title?: string
   subtitle?: string

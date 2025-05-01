@@ -34,6 +34,7 @@ import * as SpaceSwshFeedDefs from './types/space/swsh/feed/defs.js'
 import * as SpaceSwshFeedEntry from './types/space/swsh/feed/entry.js'
 import * as SpaceSwshFeedGetEntries from './types/space/swsh/feed/getEntries.js'
 import * as SpaceSwshFeedSendEntry from './types/space/swsh/feed/sendEntry.js'
+import * as SpaceSwshRichtextFacet from './types/space/swsh/richtext/facet.js'
 import * as XyzStatusphereDefs from './types/xyz/statusphere/defs.js'
 import * as XyzStatusphereGetStatuses from './types/xyz/statusphere/getStatuses.js'
 import * as XyzStatusphereGetUser from './types/xyz/statusphere/getUser.js'
@@ -69,6 +70,7 @@ export * as SpaceSwshFeedDefs from './types/space/swsh/feed/defs.js'
 export * as SpaceSwshFeedEntry from './types/space/swsh/feed/entry.js'
 export * as SpaceSwshFeedGetEntries from './types/space/swsh/feed/getEntries.js'
 export * as SpaceSwshFeedSendEntry from './types/space/swsh/feed/sendEntry.js'
+export * as SpaceSwshRichtextFacet from './types/space/swsh/richtext/facet.js'
 export * as AppBskyActorDefs from './types/app/bsky/actor/defs.js'
 export * as AppBskyActorProfile from './types/app/bsky/actor/profile.js'
 
@@ -485,10 +487,12 @@ export class SpaceNS {
 export class SpaceSwshNS {
   _client: XrpcClient
   feed: SpaceSwshFeedNS
+  richtext: SpaceSwshRichtextNS
 
   constructor(client: XrpcClient) {
     this._client = client
     this.feed = new SpaceSwshFeedNS(client)
+    this.richtext = new SpaceSwshRichtextNS(client)
   }
 }
 
@@ -579,6 +583,14 @@ export class SpaceSwshFeedEntryRecord {
       { collection: 'space.swsh.feed.entry', ...params },
       { headers },
     )
+  }
+}
+
+export class SpaceSwshRichtextNS {
+  _client: XrpcClient
+
+  constructor(client: XrpcClient) {
+    this._client = client
   }
 }
 

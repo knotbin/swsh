@@ -7,7 +7,9 @@ import {
 import { SpaceSwshFeedEntry } from '@swsh/lexicon'
 
 import { AppContext } from '#/context'
+import { Facet } from '#/db'
 import { Server } from '#/lexicons'
+import { encodeFacets } from '#/lib/facets'
 import { entryToEntryView } from '#/lib/hydrate'
 import { getSessionAgent } from '#/session'
 
@@ -23,9 +25,16 @@ export default function (server: Server, ctx: AppContext) {
       const rkey = TID.nextStr()
       const record = {
         $type: 'space.swsh.feed.entry',
-        content: input.body.entry,
+        content: input.body.content,
+        title: input.body.title ?? null,
+        subtitle: input.body.subtitle ?? null,
+        facets: input.body.facets?.map(f => ({
+          byteStart: f.index.byteStart,
+          byteEnd: f.index.byteEnd,
+          type: f.features[0].$type.split('.').pop()?.toLowerCase() ?? ''
+        })) ?? [],
         createdAt: new Date().toISOString(),
-        visibility: 'public',
+        visibility: input.body.visibility ?? 'public',
       }
 
       const validation = SpaceSwshFeedEntry.validateRecord(record)
@@ -52,8 +61,9 @@ export default function (server: Server, ctx: AppContext) {
         uri,
         authorDid: agent.assertDid,
         content: record.content,
-        title: null,
-        subtitle: null,
+        title: record.title,
+        subtitle: record.subtitle,
+        facets: encodeFacets(record.facets),
         createdAt: record.createdAt,
         indexedAt: new Date().toISOString(),
       }
@@ -63,7 +73,13 @@ export default function (server: Server, ctx: AppContext) {
         // This isn't strictly necessary because the write event will be
         // handled in #/firehose/ingestor.ts, but it ensures that future reads
         // will be up-to-date after this method finishes.
-        await ctx.db.insertInto('entry').values(optimisticEntry).execute()
+        await ctx.db
+          .insertInto('entry')
+          .values({
+            ...optimisticEntry,
+            facets: encodeFacets(record.facets),
+          })
+          .execute()
       } catch (err) {
         ctx.logger.warn(
           { err },

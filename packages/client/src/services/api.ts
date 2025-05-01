@@ -75,6 +75,18 @@ export const api = {
   createStatus(params: XyzStatusphereSendStatus.InputSchema) {
     return agent.xyz.statusphere.sendStatus(params)
   },
+
+  // Send entry
+  async sendEntry(data: { content: string; title?: string; subtitle?: string }) {
+    const response = await agent.space.swsh.feed.sendEntry(data)
+    return response.data
+  },
+
+  // Get entries
+  async getEntries() {
+    const response = await agent.space.swsh.feed.getEntries()
+    return response.data
+  },
 }
 
 export default api

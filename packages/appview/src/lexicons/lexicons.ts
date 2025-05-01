@@ -1496,6 +1496,16 @@ export const schemaDict = {
             content: {
               type: 'string',
               maxLength: 100000,
+              description: 'The primary post content.',
+            },
+            facets: {
+              type: 'array',
+              description:
+                'Annotations of text (mentions, URLs, hashtags, etc)',
+              items: {
+                type: 'ref',
+                ref: 'lex:space.swsh.richtext.facet',
+              },
             },
             createdAt: {
               type: 'string',
@@ -1597,13 +1607,32 @@ export const schemaDict = {
           encoding: 'application/json',
           schema: {
             type: 'object',
-            required: ['entry'],
+            required: ['content'],
             properties: {
-              entry: {
+              title: {
                 type: 'string',
-                minLength: 1,
-                maxGraphemes: 1,
-                maxLength: 32,
+                maxLength: 1000,
+              },
+              subtitle: {
+                type: 'string',
+                maxLength: 1000,
+              },
+              content: {
+                type: 'string',
+                maxLength: 100000,
+              },
+              facets: {
+                type: 'array',
+                items: {
+                  type: 'ref',
+                  ref: 'lex:space.swsh.richtext.facet',
+                },
+              },
+              visibility: {
+                type: 'string',
+                enum: ['public', 'url', 'author'],
+                default: 'public',
+                description: 'Tells the visibility of the article to AppView.',
               },
             },
           },
@@ -1619,6 +1648,167 @@ export const schemaDict = {
                 ref: 'lex:space.swsh.feed.defs#entryView',
               },
             },
+          },
+        },
+      },
+    },
+  },
+  SpaceSwshRichtextFacet: {
+    lexicon: 1,
+    id: 'space.swsh.richtext.facet',
+    defs: {
+      main: {
+        type: 'object',
+        description: 'Annotation of a sub-string within rich text.',
+        required: ['index', 'features'],
+        properties: {
+          index: {
+            type: 'ref',
+            ref: 'lex:space.swsh.richtext.facet#byteSlice',
+          },
+          features: {
+            type: 'array',
+            items: {
+              type: 'union',
+              refs: [
+                'lex:space.swsh.richtext.facet#mention',
+                'lex:space.swsh.richtext.facet#link',
+                'lex:space.swsh.richtext.facet#tag',
+                'lex:space.swsh.richtext.facet#bold',
+                'lex:space.swsh.richtext.facet#italic',
+                'lex:space.swsh.richtext.facet#underline',
+                'lex:space.swsh.richtext.facet#strikethrough',
+                'lex:space.swsh.richtext.facet#code',
+              ],
+            },
+          },
+        },
+      },
+      mention: {
+        type: 'object',
+        description:
+          "Facet feature for mention of another account. The text is usually a handle, including a '@' prefix, but the facet reference is a DID.",
+        required: ['did'],
+        properties: {
+          did: {
+            type: 'string',
+            format: 'did',
+          },
+        },
+      },
+      link: {
+        type: 'object',
+        description:
+          'Facet feature for a URL. The text URL may have been simplified or truncated, but the facet reference should be a complete URL.',
+        required: ['uri'],
+        properties: {
+          uri: {
+            type: 'string',
+            format: 'uri',
+          },
+        },
+      },
+      tag: {
+        type: 'object',
+        description:
+          "Facet feature for a hashtag. The text usually includes a '#' prefix, but the facet reference should not (except in the case of 'double hash tags').",
+        required: ['tag'],
+        properties: {
+          tag: {
+            type: 'string',
+            maxLength: 640,
+            maxGraphemes: 64,
+          },
+        },
+      },
+      byteSlice: {
+        type: 'object',
+        description:
+          'Specifies the sub-string range a facet feature applies to. Start index is inclusive, end index is exclusive. Indices are zero-indexed, counting bytes of the UTF-8 encoded text. NOTE: some languages, like Javascript, use UTF-16 or Unicode codepoints for string slice indexing; in these languages, convert to byte arrays before working with facets.',
+        required: ['byteStart', 'byteEnd'],
+        properties: {
+          byteStart: {
+            type: 'integer',
+            minimum: 0,
+          },
+          byteEnd: {
+            type: 'integer',
+            minimum: 0,
+          },
+        },
+      },
+      bold: {
+        type: 'object',
+        description: 'Facet feature for bold text formatting.',
+        required: ['byteStart', 'byteEnd'],
+        properties: {
+          byteStart: {
+            type: 'integer',
+            minimum: 0,
+          },
+          byteEnd: {
+            type: 'integer',
+            minimum: 0,
+          },
+        },
+      },
+      italic: {
+        type: 'object',
+        description: 'Facet feature for italic text formatting.',
+        required: ['byteStart', 'byteEnd'],
+        properties: {
+          byteStart: {
+            type: 'integer',
+            minimum: 0,
+          },
+          byteEnd: {
+            type: 'integer',
+            minimum: 0,
+          },
+        },
+      },
+      underline: {
+        type: 'object',
+        description: 'Facet feature for underlined text formatting.',
+        required: ['byteStart', 'byteEnd'],
+        properties: {
+          byteStart: {
+            type: 'integer',
+            minimum: 0,
+          },
+          byteEnd: {
+            type: 'integer',
+            minimum: 0,
+          },
+        },
+      },
+      strikethrough: {
+        type: 'object',
+        description: 'Facet feature for strikethrough text formatting.',
+        required: ['byteStart', 'byteEnd'],
+        properties: {
+          byteStart: {
+            type: 'integer',
+            minimum: 0,
+          },
+          byteEnd: {
+            type: 'integer',
+            minimum: 0,
+          },
+        },
+      },
+      code: {
+        type: 'object',
+        description: 'Facet feature for monospace/code text formatting.',
+        required: ['byteStart', 'byteEnd'],
+        properties: {
+          byteStart: {
+            type: 'integer',
+            minimum: 0,
+          },
+          byteEnd: {
+            type: 'integer',
+            minimum: 0,
           },
         },
       },
@@ -1793,6 +1983,7 @@ export const ids = {
   SpaceSwshFeedEntry: 'space.swsh.feed.entry',
   SpaceSwshFeedGetEntries: 'space.swsh.feed.getEntries',
   SpaceSwshFeedSendEntry: 'space.swsh.feed.sendEntry',
+  SpaceSwshRichtextFacet: 'space.swsh.richtext.facet',
   AppBskyActorDefs: 'app.bsky.actor.defs',
   AppBskyActorProfile: 'app.bsky.actor.profile',
 } as const

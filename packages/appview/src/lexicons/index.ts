@@ -316,10 +316,12 @@ export class SpaceNS {
 export class SpaceSwshNS {
   _server: Server
   feed: SpaceSwshFeedNS
+  richtext: SpaceSwshRichtextNS
 
   constructor(server: Server) {
     this._server = server
     this.feed = new SpaceSwshFeedNS(server)
+    this.richtext = new SpaceSwshRichtextNS(server)
   }
 }
 
@@ -350,6 +352,14 @@ export class SpaceSwshFeedNS {
   ) {
     const nsid = 'space.swsh.feed.sendEntry' // @ts-ignore
     return this._server.xrpc.method(nsid, cfg)
+  }
+}
+
+export class SpaceSwshRichtextNS {
+  _server: Server
+
+  constructor(server: Server) {
+    this._server = server
   }
 }
 

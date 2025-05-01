@@ -11,6 +11,7 @@ import {
   type $Typed,
   type OmitKey,
 } from '../../../../util'
+import type * as SpaceSwshRichtextFacet from '../richtext/facet.js'
 import type * as SpaceSwshFeedDefs from './defs.js'
 
 const is$typed = _is$typed,
@@ -20,7 +21,12 @@ const id = 'space.swsh.feed.sendEntry'
 export interface QueryParams {}
 
 export interface InputSchema {
-  entry: string
+  title?: string
+  subtitle?: string
+  content: string
+  facets?: SpaceSwshRichtextFacet.Main[]
+  /** Tells the visibility of the article to AppView. */
+  visibility?: 'public' | 'url' | 'author'
 }
 
 export interface OutputSchema {

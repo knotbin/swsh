@@ -31,8 +31,15 @@ export type Entry = {
   title: string | null
   subtitle: string | null
   content: string
+  facets: string | null
   createdAt: string
   indexedAt: string
+}
+
+export type Facet = {
+  byteStart: number
+  byteEnd: number
+  type: string
 }
 
 export type AuthSession = {
@@ -119,6 +126,7 @@ migrations['001'] = {
       .addColumn('title', 'varchar', (col) => col)
       .addColumn('subtitle', 'varchar', (col) => col)
       .addColumn('content', 'varchar', (col) => col.notNull())
+      .addColumn('facets', 'varchar', (col) => col)
       .addColumn('createdAt', 'varchar', (col) => col.notNull())
       .addColumn('indexedAt', 'varchar', (col) => col.notNull())
       .execute()

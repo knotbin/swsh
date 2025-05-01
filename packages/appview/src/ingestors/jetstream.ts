@@ -8,6 +8,7 @@ import WebSocket from 'ws'
 
 import type { Database } from '#/db'
 import { env } from '#/lib/env'
+import { encodeFacets } from '#/lib/facets'
 
 export async function createJetstreamIngester(db: Database) {
   const logger = pino({ name: 'jetstream ingestion' })
@@ -120,6 +121,7 @@ export async function createJetstreamIngester(db: Database) {
               title: validatedRecord.value.title ?? null,
               subtitle: validatedRecord.value.subtitle ?? null,
               content: validatedRecord.value.content,
+              facets: encodeFacets(validatedRecord.value.facets),
               createdAt: validatedRecord.value.createdAt ?? now.toISOString(),
               indexedAt: now.toISOString(),
             })
@@ -128,6 +130,7 @@ export async function createJetstreamIngester(db: Database) {
                 title: validatedRecord.value.title ?? null,
                 subtitle: validatedRecord.value.subtitle ?? null,
                 content: validatedRecord.value.content,
+                facets: encodeFacets(validatedRecord.value.facets),
                 createdAt: validatedRecord.value.createdAt ?? now.toISOString(),
                 indexedAt: now.toISOString(),
               }),
