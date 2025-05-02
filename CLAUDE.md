@@ -5,4 +5,4 @@ if you're going to undertake multi-file or otherwise complex edits, please write
 and most importantly, have fun!
 
 your friend,
-mozzius
+roscoe

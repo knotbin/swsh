@@ -66,6 +66,17 @@ export default function EditEntry() {
         }
       }
       lastSaved.current = { title, subtitle, content }
+      
+      // Use both methods to ensure all components update
+      // 1. Direct query invalidation
+      window.dispatchEvent(new CustomEvent('entry-changed', { 
+        detail: { action: rkey ? 'update' : 'create' }
+      }))
+      
+      // After saving, navigate back to the home page to see the updated list
+      if (!rkey) { // Only for new entries
+        setTimeout(() => navigate('/'), 300)
+      }
     } catch (err) {
       alert(`Failed to save entry: ${err}`)
     } finally {

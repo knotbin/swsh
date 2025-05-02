@@ -77,9 +77,13 @@ export const api = {
   },
 
   // Send entry
-  async sendEntry(data: { content: string; title?: string; subtitle?: string; rkey?: string }) {
+  async sendEntry(data: {
+    content: string
+    title?: string
+    subtitle?: string
+    rkey?: string
+  }) {
     const response = await agent.space.swsh.feed.sendEntry(data)
-    console.log('sendEntry response: ', response)
     return response.data
   },
 
@@ -101,20 +105,16 @@ export const api = {
       rkey: params.rkey,
     }
     const url = `/api/getRecord?${new URLSearchParams(getRecordParams).toString()}`
-    console.log('Fetching URL:', url)
-    
+
     const response = await fetch(url, {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
       },
     })
-    console.log('Response status:', response.status)
-    console.log('Response headers:', Object.fromEntries(response.headers.entries()))
-    
+
     const text = await response.text()
-    console.log('Response text:', text)
-    
+
     try {
       const data = JSON.parse(text)
       if (!response.ok) {
@@ -128,16 +128,12 @@ export const api = {
   },
 
   // Delete entry
-  async deleteEntry(params: { repo: string; rkey: string }) {
-    console.log('Starting deleteEntry with params:', params)
-    
+  async deleteEntry(rkey: string) {
     const deleteRecordParams = {
-      repo: params.repo,
       collection: 'space.swsh.feed.entry',
-      rkey: params.rkey,
+      rkey,
     }
-    
-    console.log('Sending delete request with params:', deleteRecordParams)
+
     try {
       const response = await fetch('/api/deleteRecord', {
         method: 'POST',
@@ -147,7 +143,15 @@ export const api = {
         },
         body: JSON.stringify(deleteRecordParams),
       })
-      return response.json
+
+      // Ensure we wait for the response
+      const responseData = await response.json()
+
+      if (!response.ok) {
+        throw new Error(responseData.error || 'Failed to delete entry')
+      }
+
+      return responseData
     } catch (err) {
       console.error('Error in deleteEntry:', err)
       throw err

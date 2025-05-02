@@ -1,16 +1,45 @@
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useEffect } from 'react'
 
 import api from '#/services/api'
 import EntryListItem from './EntryListItem'
 
 export default function EntryList() {
-  const { data, isLoading, error } = useQuery({
+  const queryClient = useQueryClient()
+  const { data, isLoading, error, refetch } = useQuery({
     queryKey: ['entries'],
     queryFn: async () => {
       const response = await api.getEntries()
       return response
     },
+    // Improve reactivity with these settings
+    staleTime: 0, // Consider data stale immediately
+    refetchOnWindowFocus: true, // Refetch when window gets focus
+    refetchOnMount: true, // Refetch when component mounts
   })
+
+  // Add a custom event listener to invalidate the query when entries are updated
+  useEffect(() => {
+    const handleEntryChanged = (event: Event) => {
+      // First invalidate the query
+      queryClient.invalidateQueries({ queryKey: ['entries'] })
+      
+      // Then force an immediate refetch
+      refetch()
+      
+      // Log details if available (for debugging)
+      const customEvent = event as CustomEvent
+      if (customEvent.detail) {
+        console.log('Entry changed event:', customEvent.detail)
+      }
+    }
+
+    // Use capture phase to ensure we get the event
+    window.addEventListener('entry-changed', handleEntryChanged, true)
+    return () => {
+      window.removeEventListener('entry-changed', handleEntryChanged, true)
+    }
+  }, [refetch, queryClient])
 
   if (isLoading) {
     return (
@@ -39,7 +68,11 @@ export default function EntryList() {
   return (
     <div>
       {data.data.entries.map((entry) => (
-        <EntryListItem key={entry.createdAt} entry={entry} />
+        <EntryListItem 
+          key={entry.rkey || entry.createdAt} 
+          entry={entry} 
+          onEntryDeleted={() => refetch()}
+        />
       ))}
     </div>
   )
