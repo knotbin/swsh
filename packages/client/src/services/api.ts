@@ -100,9 +100,58 @@ export const api = {
       collection: 'space.swsh.feed.entry',
       rkey: params.rkey,
     }
-    const response = await agent.com.atproto.repo.getRecord(getRecordParams)
-    console.log('getEntry response: ', response)
-    return response.data
+    const url = `/api/getRecord?${new URLSearchParams(getRecordParams).toString()}`
+    console.log('Fetching URL:', url)
+    
+    const response = await fetch(url, {
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    console.log('Response status:', response.status)
+    console.log('Response headers:', Object.fromEntries(response.headers.entries()))
+    
+    const text = await response.text()
+    console.log('Response text:', text)
+    
+    try {
+      const data = JSON.parse(text)
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to get entry')
+      }
+      return data
+    } catch (e) {
+      console.error('Error parsing response:', e)
+      throw new Error('Invalid response format from server')
+    }
+  },
+
+  // Delete entry
+  async deleteEntry(params: { repo: string; rkey: string }) {
+    console.log('Starting deleteEntry with params:', params)
+    
+    const deleteRecordParams = {
+      repo: params.repo,
+      collection: 'space.swsh.feed.entry',
+      rkey: params.rkey,
+    }
+    
+    console.log('Sending delete request with params:', deleteRecordParams)
+    try {
+      const response = await fetch('/api/deleteRecord', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(deleteRecordParams),
+      })
+      return response.json
+    } catch (err) {
+      console.error('Error in deleteEntry:', err)
+      throw err
+    }
   },
 }
 

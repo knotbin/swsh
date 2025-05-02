@@ -3,6 +3,19 @@ import { IdResolver, MemoryCache } from '@atproto/identity'
 const HOUR = 60e3 * 60
 const DAY = HOUR * 24
 
+interface Service {
+  id: string
+  type: string
+  serviceEndpoint: string
+}
+
+interface AtprotoData {
+  did: string
+  signingKey: string
+  handle: string
+  pds: string
+}
+
 export function createIdResolver() {
   return new IdResolver({
     didCache: new MemoryCache(HOUR, DAY),
@@ -12,17 +25,28 @@ export function createIdResolver() {
 export interface BidirectionalResolver {
   resolveDidToHandle(did: string): Promise<string>
   resolveDidsToHandles(dids: string[]): Promise<Record<string, string>>
+  resolveDidToPdsUrl(did: string): Promise<string | undefined>
 }
 
 export function createBidirectionalResolver(resolver: IdResolver) {
   return {
     async resolveDidToHandle(did: string): Promise<string> {
-      const didDoc = await resolver.did.resolveAtprotoData(did)
+      const didDoc = await resolver.did.resolveAtprotoData(did) as AtprotoData
       const resolvedHandle = await resolver.handle.resolve(didDoc.handle)
       if (resolvedHandle === did) {
         return didDoc.handle
       }
       return did
+    },
+
+    async resolveDidToPdsUrl(did: string): Promise<string | undefined> {
+      try {
+        const didDoc = await resolver.did.resolveAtprotoData(did) as AtprotoData
+        return didDoc.pds
+      } catch (err) {
+        console.error('Error resolving PDS URL:', err)
+        return undefined
+      }
     },
 
     async resolveDidsToHandles(

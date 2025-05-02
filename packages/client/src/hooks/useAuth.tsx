@@ -43,12 +43,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         const { data: userData } = await api.getCurrentUser({})
 
-        // Clean up URL if needed
+        // Clean up URL if needed, but only remove auth-related parameters
         if (window.location.search && userData) {
+          const params = new URLSearchParams(window.location.search)
+          params.delete('error')
+          params.delete('code')
+          params.delete('state')
+          
+          const newSearch = params.toString()
+          const newUrl = newSearch 
+            ? `${window.location.pathname}?${newSearch}`
+            : window.location.pathname
+            
           window.history.replaceState(
             {},
             document.title,
-            window.location.pathname,
+            newUrl
           )
         }
 

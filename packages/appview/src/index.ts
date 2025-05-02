@@ -17,6 +17,9 @@ import { createBidirectionalResolver, createIdResolver } from '#/id-resolver'
 import { createFirehoseIngester, createJetstreamIngester } from '#/ingestors'
 import { createServer } from '#/lexicons'
 import { env } from '#/lib/env'
+import * as resolve from '#/api/resolve'
+import * as getRecord from '#/api/getRecord'
+import * as deleteRecord from '#/api/deleteRecord'
 
 export class Server {
   constructor(
@@ -74,6 +77,9 @@ export class Server {
     app.use(server.xrpc.router)
     app.use(error.createHandler(ctx))
     app.use(wellKnown.createRouter(ctx))
+    app.use(resolve.createRouter(ctx))
+    app.use(getRecord.createRouter(ctx))
+    app.use(deleteRecord.createRouter(ctx))
 
     // Serve static files from the frontend build - prod only
     if (env.isProduction) {

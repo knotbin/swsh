@@ -32,6 +32,11 @@ export const createRouter = (ctx: AppContext) => {
             type: 'SwshAppView',
             serviceEndpoint: `https://${domain}`,
           },
+          {
+            id: '#atproto_pds',
+            type: 'AtprotoPersonalDataServer',
+            serviceEndpoint: `https://${domain}`,
+          },
         ],
       })
   })
