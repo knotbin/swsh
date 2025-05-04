@@ -4,9 +4,10 @@ interface EntryHeaderProps {
   onSave: () => void
   isSaving?: boolean
   isDirty?: boolean // true if there are unsaved changes
+  canSave?: boolean // true if the entry can be saved (has content)
 }
 
-const EntryHeader = ({ onSave, isSaving = false, isDirty = false }: EntryHeaderProps) => {
+const EntryHeader = ({ onSave, isSaving = false, isDirty = false, canSave = false }: EntryHeaderProps) => {
   return (
     <header className="border-b border-gray-200 dark:border-gray-700 pb-4">
       <div className="flex justify-between items-center">
@@ -25,7 +26,7 @@ const EntryHeader = ({ onSave, isSaving = false, isDirty = false }: EntryHeaderP
         </div>
         <button
           onClick={onSave}
-          disabled={isSaving}
+          disabled={isSaving || !canSave}
           className="px-4 py-2 bg-blue-500 text-white font-semibold hover:bg-blue-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isSaving ? 'Saving...' : 'Save'}

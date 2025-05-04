@@ -82,6 +82,16 @@ export default function (server: Server, ctx: AppContext) {
             ...optimisticEntry,
             facets: encodeFacets(record.facets),
           })
+          .onConflict((oc) =>
+            oc.column('uri').doUpdateSet({
+              content: record.content,
+              title: record.title,
+              subtitle: record.subtitle,
+              facets: encodeFacets(record.facets),
+              createdAt: record.createdAt,
+              indexedAt: new Date().toISOString(),
+            }),
+          )
           .execute()
       } catch (err) {
         ctx.logger.warn(

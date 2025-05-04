@@ -25,6 +25,8 @@ export default function EditEntry() {
     subtitle !== lastSaved.current.subtitle ||
     content !== lastSaved.current.content
 
+  const canSave = content.trim().length > 0
+
   useEffect(() => {
     const fetchEntry = async () => {
       if (!rkey) return
@@ -49,6 +51,11 @@ export default function EditEntry() {
   }, [rkey])
 
   const handleSave = async () => {
+    if (!canSave) {
+      alert('Please add some content before saving')
+      return
+    }
+
     setIsSaving(true)
     try {
       let response
@@ -86,10 +93,10 @@ export default function EditEntry() {
 
   return (
     <div className="flex flex-col w-full min-h-full">
-      <EntryHeader onSave={handleSave} isSaving={isSaving} isDirty={isDirty} />
+      <EntryHeader onSave={handleSave} isSaving={isSaving} isDirty={isDirty} canSave={canSave} />
       {/* Editor area */}
       <div className="flex-1 max-w-4xl mx-auto flex flex-col justify-start pt-12 pb-24 w-full">
-        <div className="w-full px-8">
+        <div className="w-full px-8 h-full flex flex-col">
           <input
             className="w-full text-4xl font-bold mb-2 outline-none border-none bg-transparent placeholder-gray-300 dark:placeholder-gray-600"
             placeholder="Title"
@@ -103,12 +110,20 @@ export default function EditEntry() {
             value={subtitle}
             onChange={e => setSubtitle(e.target.value)}
           />
-          <textarea
-            className="w-full min-h-[200px] text-lg outline-none border-none bg-transparent placeholder-gray-300 dark:placeholder-gray-600 resize-none"
-            placeholder="Start writing..."
-            value={content}
-            onChange={e => setContent(e.target.value)}
-          />
+          <div className="grow-wrap font-spectral">
+            <textarea
+              className="w-full flex-1 text-lg outline-none border-none bg-transparent placeholder-gray-300 dark:placeholder-gray-600"
+              placeholder="Start writing..."
+              value={content}
+              onChange={
+                e => {
+                  setContent(e.target.value)
+                  const parent = e.target.parentNode as HTMLElement
+                  parent.dataset.replicatedValue = e.target.value
+                }
+              }
+            />
+          </div>
         </div>
       </div>
     </div>

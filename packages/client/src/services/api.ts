@@ -98,12 +98,23 @@ export const api = {
   },
 
   // Get entry
-  async getEntry(params: { repo: string; rkey: string }) {
-    const getRecordParams = {
-      repo: params.repo,
+  async getEntry(params: { handle?: string; repo?: string; rkey: string }) {
+    // Create a parameters object with only the properties that are present
+    const getRecordParams: Record<string, string> = {
       collection: 'space.swsh.feed.entry',
       rkey: params.rkey,
     }
+    
+    // Only add repo parameter if it exists
+    if (params.repo) {
+      getRecordParams.repo = params.repo
+    }
+    
+    // Only add handle parameter if it exists
+    if (params.handle) {
+      getRecordParams.handle = params.handle
+    }
+    
     const url = `/api/getRecord?${new URLSearchParams(getRecordParams).toString()}`
 
     const response = await fetch(url, {
@@ -120,7 +131,19 @@ export const api = {
       if (!response.ok) {
         throw new Error(data.error || 'Failed to get entry')
       }
-      return data
+      
+      // Return the response in a format that matches what components expect
+      // EditEntry.tsx expects response.value, EntryView.tsx expects entry in a specific format
+      return {
+        uri: data.uri,
+        cid: data.cid,
+        repo: data.repo,
+        value: data.value,
+        // For compatibility with components that expect a different structure
+        data: {
+          entry: data.value
+        }
+      }
     } catch (e) {
       console.error('Error parsing response:', e)
       throw new Error('Invalid response format from server')

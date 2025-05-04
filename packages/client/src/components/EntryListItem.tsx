@@ -8,13 +8,16 @@ import api from '#/services/api'
 
 interface EntryListItemProps {
   entry: SpaceSwshFeedDefs.EntryView & {
-    author?: { did: string }
+    author?: { did: string; handle?: string }
     rkey?: string
   }
   onEntryDeleted?: () => void
 }
 
-export default function EntryListItem({ entry, onEntryDeleted }: EntryListItemProps) {
+export default function EntryListItem({
+  entry,
+  onEntryDeleted,
+}: EntryListItemProps) {
   const createdAt = entry.createdAt || new Date().toISOString()
   const navigate = useNavigate()
   const { user } = useAuth()
@@ -38,16 +41,18 @@ export default function EntryListItem({ entry, onEntryDeleted }: EntryListItemPr
       if (response && response.success === true) {
         // Mark this entry as deleted locally
         setIsDeleted(true)
-        
+
         // Notify parent component directly through callback
         if (onEntryDeleted) {
           onEntryDeleted()
         }
-        
+
         // Also dispatch detailed event for other components
-        window.dispatchEvent(new CustomEvent('entry-changed', { 
-          detail: { action: 'delete', rkey: entry.rkey }
-        }))
+        window.dispatchEvent(
+          new CustomEvent('entry-changed', {
+            detail: { action: 'delete', rkey: entry.rkey },
+          }),
+        )
       } else {
         alert(
           'Failed to delete entry: The server returned an unexpected response',
@@ -57,6 +62,18 @@ export default function EntryListItem({ entry, onEntryDeleted }: EntryListItemPr
       console.error('Failed to delete entry:', err)
       alert('Failed to delete entry')
     }
+  }
+
+  // Handle navigation to full blog view
+  const handleEntryClick = (e: React.MouseEvent) => {
+    // Don't navigate if clicking on menu or menu items
+    if ((e.target as HTMLElement).closest('.menu-container')) {
+      return
+    }
+
+    // Navigate to the full blog view
+    const handle = entry.author?.handle || user?.profile.handle || 'user'
+    navigate(`/${handle}/entry/${entry.rkey}`)
   }
 
   // Close menu when clicking outside
@@ -81,13 +98,19 @@ export default function EntryListItem({ entry, onEntryDeleted }: EntryListItemPr
   }
 
   return (
-    <article className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 mb-6 relative">
+    <article
+      className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 mb-6 relative cursor-pointer hover:shadow-md transition-shadow duration-200"
+      onClick={handleEntryClick}
+    >
       {isOwnEntry && entry.rkey && (
-        <div className="absolute top-4 right-4 menu-container">
+        <div className="absolute top-4 right-4 menu-container z-10">
           <div className="relative inline-block text-left">
             <button
               type="button"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              onClick={(e) => {
+                e.stopPropagation()
+                setIsMenuOpen(!isMenuOpen)
+              }}
               className="inline-flex items-center justify-center w-8 h-8 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
               aria-label="Entry options"
             >
@@ -106,16 +129,25 @@ export default function EntryListItem({ entry, onEntryDeleted }: EntryListItemPr
               </svg>
             </button>
             {isMenuOpen && (
-              <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-gray-50 dark:bg-gray-900 ring-1 ring-gray-200 dark:ring-gray-700">
+              <div
+                className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-gray-50 dark:bg-gray-900 ring-1 ring-gray-200 dark:ring-gray-700"
+                onClick={(e) => e.stopPropagation()}
+              >
                 <div className="py-2">
                   <button
-                    onClick={() => navigate(`/edit?rkey=${entry.rkey}`)}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      navigate(`/edit?rkey=${entry.rkey}`)
+                    }}
                     className="block w-full text-left px-4 py-2 mx-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
                   >
                     Edit
                   </button>
                   <button
-                    onClick={handleDelete}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleDelete()
+                    }}
                     className="block w-full text-left px-4 py-2 mx-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
                   >
                     Delete
@@ -137,16 +169,31 @@ export default function EntryListItem({ entry, onEntryDeleted }: EntryListItemPr
             {entry.subtitle}
           </h3>
         )}
-        <div className="prose dark:prose-invert max-w-none">
-          {entry.content.split('\n').map((paragraph, i) => (
-            <p key={i} className="mb-4 last:mb-0">
-              {paragraph}
-            </p>
-          ))}
+        <div className="font-spectral prose dark:prose-invert max-w-none">
+          <div className="line-clamp-2">
+            {entry.content}
+          </div>
+          {entry.content.split('\n').length > 2 && (
+            <p className="text-blue-500 mt-2">Read more...</p>
+          )}
         </div>
       </div>
       <div className="text-sm text-gray-500 dark:text-gray-400">
-        {formatDistanceToNow(new Date(createdAt), { addSuffix: true })}
+        <div className="mb-1">
+          <span>
+            {formatDistanceToNow(new Date(createdAt), { addSuffix: true })}
+          </span>
+        </div>
+        {entry.author?.handle && (
+          <div className="text-gray-600 dark:text-gray-400">
+            <span>{entry.author.handle}</span>
+            {entry.author?.did && (
+              <span className="ml-2 text-gray-500 dark:text-gray-500 text-xs">
+                {entry.author.did.substring(0, 10)}...
+              </span>
+            )}
+          </div>
+        )}
       </div>
     </article>
   )
