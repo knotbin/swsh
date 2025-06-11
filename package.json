@@ -15,14 +15,17 @@
     "build:lexicon": "pnpm --filter @swsh/lexicon build",
     "build:appview": "pnpm --filter @swsh/appview build",
     "build:client": "pnpm --filter @swsh/client build",
-    "start": "concurrently \"pnpm start:appview\" \"pnpm start:client\" --kill-others-on-fail",
+    "start": "concurrently \"pnpm start:appview\" \"pnpm start:client\" --kill-others",
     "start:dev": "pnpm -r start",
     "start:appview": "pnpm --filter @swsh/appview start",
     "start:client": "pnpm --filter @swsh/client start",
     "stop": "pkill -f \"node.*@swsh/appview\" && pkill -f \"node.*@swsh/client\"",
     "clean": "pnpm -r clean",
     "format": "echo 'no format'",
-    "typecheck": "pnpm -r typecheck"
+    "typecheck": "pnpm -r typecheck",
+    "docker:up": "docker compose up --build",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f"
   },
   "devDependencies": {
     "@atproto/lex-cli": "^0.8.0",
