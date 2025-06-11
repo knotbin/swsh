@@ -29,7 +29,9 @@ export async function statusToStatusView(
 export async function entryToEntryView(
   entry: Entry,
   ctx: AppContext,
-): Promise<SpaceSwshFeedDefs.EntryView & { author: { did: string }; rkey: string }> {
+): Promise<
+  SpaceSwshFeedDefs.EntryView & { author: { did: string }; rkey: string }
+> {
   // Extract rkey from URI
   const rkey = entry.uri.split('/').pop() || ''
 

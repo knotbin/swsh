@@ -1,17 +1,15 @@
 /**
  * GENERATED CODE - DO NOT MODIFY
  */
-import { BlobRef, type ValidationResult } from '@atproto/lexicon'
-import { HandlerAuth, HandlerPipeThrough } from '@atproto/xrpc-server'
-import express from 'express'
-import { CID } from 'multiformats/cid'
+import { type HonoRequest } from '@hono/hono'
+import { HandlerAuth, HandlerPipeThrough } from '@sprk/xrpc-server'
 
-import { validate as _validate } from '../../../../lexicons'
+import { validate as _validate } from '../../../../lexicons.ts'
 import {
   is$typed as _is$typed,
   type $Typed,
   type OmitKey,
-} from '../../../../util'
+} from '../../../../util.ts'
 import type * as ComAtprotoRepoDefs from './defs.js'
 
 const is$typed = _is$typed,
@@ -61,8 +59,7 @@ export type HandlerReqCtx<HA extends HandlerAuth = never> = {
   auth: HA
   params: QueryParams
   input: HandlerInput
-  req: express.Request
-  res: express.Response
+  req: HonoRequest
   resetRouteRateLimits: () => Promise<void>
 }
 export type Handler<HA extends HandlerAuth = never> = (

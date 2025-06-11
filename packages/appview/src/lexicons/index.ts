@@ -1,13 +1,14 @@
 /**
  * GENERATED CODE - DO NOT MODIFY
  */
+import { type Env } from '@hono/hono'
 import {
   createServer as createXrpcServer,
   Server as XrpcServer,
   type AuthVerifier,
   type StreamAuthVerifier,
   type Options as XrpcOptions,
-} from '@atproto/xrpc-server'
+} from '@sprk/xrpc-server'
 
 import { schemas } from './lexicons.js'
 import * as ComAtprotoRepoApplyWrites from './types/com/atproto/repo/applyWrites.js'
@@ -30,19 +31,21 @@ import * as XyzStatusphereGetStatuses from './types/xyz/statusphere/getStatuses.
 import * as XyzStatusphereGetUser from './types/xyz/statusphere/getUser.js'
 import * as XyzStatusphereSendStatus from './types/xyz/statusphere/sendStatus.js'
 
-export function createServer(options?: XrpcOptions): Server {
-  return new Server(options)
+export function createServer<T extends Env = Env>(
+  options?: XrpcOptions,
+): Server<T> {
+  return new Server<T>(options)
 }
 
-export class Server {
-  xrpc: XrpcServer
-  xyz: XyzNS
-  com: ComNS
-  space: SpaceNS
-  app: AppNS
+export class Server<T extends Env = Env> {
+  xrpc: XrpcServer<T>
+  xyz: XyzNS<T>
+  com: ComNS<T>
+  space: SpaceNS<T>
+  app: AppNS<T>
 
   constructor(options?: XrpcOptions) {
-    this.xrpc = createXrpcServer(schemas, options)
+    this.xrpc = createXrpcServer<T>(schemas, options)
     this.xyz = new XyzNS(this)
     this.com = new ComNS(this)
     this.space = new SpaceNS(this)
@@ -50,20 +53,20 @@ export class Server {
   }
 }
 
-export class XyzNS {
-  _server: Server
-  statusphere: XyzStatusphereNS
+export class XyzNS<T extends Env> {
+  _server: Server<T>
+  statusphere: XyzStatusphereNS<T>
 
-  constructor(server: Server) {
+  constructor(server: Server<T>) {
     this._server = server
     this.statusphere = new XyzStatusphereNS(server)
   }
 }
 
-export class XyzStatusphereNS {
-  _server: Server
+export class XyzStatusphereNS<T extends Env> {
+  _server: Server<T>
 
-  constructor(server: Server) {
+  constructor(server: Server<T>) {
     this._server = server
   }
 
@@ -101,32 +104,32 @@ export class XyzStatusphereNS {
   }
 }
 
-export class ComNS {
-  _server: Server
-  atproto: ComAtprotoNS
-  whtwnd: ComWhtwndNS
+export class ComNS<T extends Env> {
+  _server: Server<T>
+  atproto: ComAtprotoNS<T>
+  whtwnd: ComWhtwndNS<T>
 
-  constructor(server: Server) {
+  constructor(server: Server<T>) {
     this._server = server
     this.atproto = new ComAtprotoNS(server)
     this.whtwnd = new ComWhtwndNS(server)
   }
 }
 
-export class ComAtprotoNS {
-  _server: Server
-  repo: ComAtprotoRepoNS
+export class ComAtprotoNS<T extends Env> {
+  _server: Server<T>
+  repo: ComAtprotoRepoNS<T>
 
-  constructor(server: Server) {
+  constructor(server: Server<T>) {
     this._server = server
     this.repo = new ComAtprotoRepoNS(server)
   }
 }
 
-export class ComAtprotoRepoNS {
-  _server: Server
+export class ComAtprotoRepoNS<T extends Env> {
+  _server: Server<T>
 
-  constructor(server: Server) {
+  constructor(server: Server<T>) {
     this._server = server
   }
 
@@ -241,20 +244,20 @@ export class ComAtprotoRepoNS {
   }
 }
 
-export class ComWhtwndNS {
-  _server: Server
-  blog: ComWhtwndBlogNS
+export class ComWhtwndNS<T extends Env> {
+  _server: Server<T>
+  blog: ComWhtwndBlogNS<T>
 
-  constructor(server: Server) {
+  constructor(server: Server<T>) {
     this._server = server
     this.blog = new ComWhtwndBlogNS(server)
   }
 }
 
-export class ComWhtwndBlogNS {
-  _server: Server
+export class ComWhtwndBlogNS<T extends Env> {
+  _server: Server<T>
 
-  constructor(server: Server) {
+  constructor(server: Server<T>) {
     this._server = server
   }
 
@@ -303,32 +306,32 @@ export class ComWhtwndBlogNS {
   }
 }
 
-export class SpaceNS {
-  _server: Server
-  swsh: SpaceSwshNS
+export class SpaceNS<T extends Env> {
+  _server: Server<T>
+  swsh: SpaceSwshNS<T>
 
-  constructor(server: Server) {
+  constructor(server: Server<T>) {
     this._server = server
     this.swsh = new SpaceSwshNS(server)
   }
 }
 
-export class SpaceSwshNS {
-  _server: Server
-  feed: SpaceSwshFeedNS
-  richtext: SpaceSwshRichtextNS
+export class SpaceSwshNS<T extends Env> {
+  _server: Server<T>
+  feed: SpaceSwshFeedNS<T>
+  richtext: SpaceSwshRichtextNS<T>
 
-  constructor(server: Server) {
+  constructor(server: Server<T>) {
     this._server = server
     this.feed = new SpaceSwshFeedNS(server)
     this.richtext = new SpaceSwshRichtextNS(server)
   }
 }
 
-export class SpaceSwshFeedNS {
-  _server: Server
+export class SpaceSwshFeedNS<T extends Env> {
+  _server: Server<T>
 
-  constructor(server: Server) {
+  constructor(server: Server<T>) {
     this._server = server
   }
 
@@ -355,38 +358,38 @@ export class SpaceSwshFeedNS {
   }
 }
 
-export class SpaceSwshRichtextNS {
-  _server: Server
+export class SpaceSwshRichtextNS<T extends Env> {
+  _server: Server<T>
 
-  constructor(server: Server) {
+  constructor(server: Server<T>) {
     this._server = server
   }
 }
 
-export class AppNS {
-  _server: Server
-  bsky: AppBskyNS
+export class AppNS<T extends Env> {
+  _server: Server<T>
+  bsky: AppBskyNS<T>
 
-  constructor(server: Server) {
+  constructor(server: Server<T>) {
     this._server = server
     this.bsky = new AppBskyNS(server)
   }
 }
 
-export class AppBskyNS {
-  _server: Server
-  actor: AppBskyActorNS
+export class AppBskyNS<T extends Env> {
+  _server: Server<T>
+  actor: AppBskyActorNS<T>
 
-  constructor(server: Server) {
+  constructor(server: Server<T>) {
     this._server = server
     this.actor = new AppBskyActorNS(server)
   }
 }
 
-export class AppBskyActorNS {
-  _server: Server
+export class AppBskyActorNS<T extends Env> {
+  _server: Server<T>
 
-  constructor(server: Server) {
+  constructor(server: Server<T>) {
     this._server = server
   }
 }

@@ -1,14 +1,14 @@
 import { HandleResolver } from '@atproto/identity'
 import { XrpcClient } from '@atproto/xrpc'
-import { Router } from 'express'
 import { SpaceSwshFeedEntry } from '@swsh/lexicon'
+import { Hono } from '@hono/hono'
 
-import { AppContext } from '#/context'
-import { getSessionAgent } from '#/session'
+import { AppContext } from '../context.js'
+import { encodeFacets } from '../lib/facets.js'
+import { entryToEntryView } from '../lib/hydrate.js'
+import { getSessionAgent } from '../session.js'
 import { schemas } from '../lexicons/lexicons.js'
 import * as ComAtprotoRepoGetRecord from '../lexicons/types/com/atproto/repo/getRecord.js'
-import { encodeFacets } from '#/lib/facets'
-import { entryToEntryView } from '#/lib/hydrate'
 
 /**
  * Get a single record from a repository.
@@ -36,27 +36,27 @@ export async function getRecord(
 }
 
 export const createRouter = (ctx: AppContext) => {
-  const router = Router()
+  const router = new Hono()
 
-  router.get('/api/getRecord', async (req, res) => {
-    const { handle, repo, collection, rkey, cid } = req.query
+  router.get('/api/getRecord', async (c) => {
+    const handle = c.req.query('handle')
+    const repo = c.req.query('repo')
+    const collection = c.req.query('collection')
+    const rkey = c.req.query('rkey')
+    const cid = c.req.query('cid')
     const handleResolver = new HandleResolver()
 
     if ((!repo && !handle) || !collection || !rkey) {
-      res
-        .status(400)
-        .json({ error: 'Missing required parameters: repo, collection, rkey' })
-      return
+      return c.json({ error: 'Missing required parameters: repo, collection, rkey' }, 400)
     }
 
     try {
       // Handle 'self' repo case
       let actualRepo: string
       if (repo === 'self') {
-        const agent = await getSessionAgent(req, res, ctx)
+        const agent = await getSessionAgent(c, ctx)
         if (!agent) {
-          res.status(401).json({ error: 'Authentication required' })
-          return
+          return c.json({ error: 'Authentication required' }, 401)
         }
         actualRepo = agent.assertDid
       } else {
@@ -67,8 +67,7 @@ export const createRouter = (ctx: AppContext) => {
         const did = await handleResolver.resolve(handle as string)
         if (!did) {
           ctx.logger.error({ handle }, 'Handle resolution failed')
-          res.status(404).json({ error: 'Handle not found' })
-          return
+          return c.json({ error: 'Handle not found' }, 404)
         }
         actualRepo = did
       }
@@ -83,12 +82,11 @@ export const createRouter = (ctx: AppContext) => {
 
         if (dbEntry) {
           const entryView = await entryToEntryView(dbEntry, ctx)
-          res.json({
+          return c.json({
             uri: dbEntry.uri,
             cid: '', // We don't store CID in our database
             value: entryView,
           })
-          return
         }
       }
 
@@ -99,8 +97,7 @@ export const createRouter = (ctx: AppContext) => {
 
       if (!pdsUrl) {
         ctx.logger.error({ actualRepo }, 'No PDS URL found')
-        res.status(404).json({ error: 'PDS URL not found for repo' })
-        return
+        return c.json({ error: 'PDS URL not found for repo' }, 404)
       }
 
       // Create an XRPC client for the PDS
@@ -117,54 +114,16 @@ export const createRouter = (ctx: AppContext) => {
       const record = await getRecord(client, params)
       ctx.logger.info({ params }, 'Successfully fetched record')
 
-      // If this is a feed entry, verify and index it if not already in the database
-      if (collection === 'space.swsh.feed.entry') {
-        if (!SpaceSwshFeedEntry.isRecord(record.value)) {
-          ctx.logger.info(
-            { record: record.value },
-            'record failed isRecord check',
-          )
-        } else {
-          const validatedRecord = SpaceSwshFeedEntry.validateRecord(record.value)
-          if (!validatedRecord.success) {
-            ctx.logger.info('record failed validation')
-          } else {
-            ctx.logger.info('feed entry validated successfully')
-
-            await ctx.db
-              .insertInto('entry')
-              .values({
-                uri: record.uri,
-                authorDid: actualRepo,
-                title: validatedRecord.value.title ?? null,
-                subtitle: validatedRecord.value.subtitle ?? null,
-                content: validatedRecord.value.content,
-                facets: validatedRecord.value.facets ? 
-                  encodeFacets(validatedRecord.value.facets.map(f => ({
-                    byteStart: f.index.byteStart,
-                    byteEnd: f.index.byteEnd,
-                    type: f.features[0].$type.split('.').pop()?.toLowerCase() ?? ''
-                  }))) : null,
-                createdAt: validatedRecord.value.createdAt ?? new Date().toISOString(),
-                indexedAt: new Date().toISOString(),
-              })
-              .execute()
-            
-            ctx.logger.info({ uri: record.uri }, 'Successfully indexed entry')
-          }
-        }
-      }
-
-      res.json(record)
+      return c.json(record)
     } catch (err) {
-      ctx.logger.error({ err, params: req.query }, 'Failed to get record')
+      ctx.logger.error({ err, params: c.req.query }, 'Failed to get record')
       if (err instanceof Error && err.message === 'Record not found') {
-        res.status(404).json({ error: 'Record not found' })
+        return c.json({ error: 'Record not found' }, 404)
       } else {
-        res.status(500).json({
+        return c.json({
           error: 'Failed to get record',
           details: err instanceof Error ? err.message : 'Unknown error',
-        })
+        }, 500)
       }
     }
   })

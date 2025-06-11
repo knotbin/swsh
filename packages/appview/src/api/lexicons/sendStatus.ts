@@ -6,15 +6,15 @@ import {
 } from '@atproto/xrpc-server'
 import { XyzStatusphereStatus } from '@swsh/lexicon'
 
-import { AppContext } from '#/context'
-import { Server } from '#/lexicons'
-import { statusToStatusView } from '#/lib/hydrate'
-import { getSessionAgent } from '#/session'
+import { AppContext } from '../../context.js'
+import { Server } from '../../lexicons/index.js'
+import { statusToStatusView } from '../../lib/hydrate.js'
+import { getSessionAgent } from '../../session.js'
 
 export default function (server: Server, ctx: AppContext) {
   server.xyz.statusphere.sendStatus({
-    handler: async ({ input, req, res }) => {
-      const agent = await getSessionAgent(req, res, ctx)
+    handler: async ({ input, req }) => {
+      const agent = await getSessionAgent(req, ctx)
       if (!agent) {
         throw new AuthRequiredError('Authentication required')
       }

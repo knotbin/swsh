@@ -1,16 +1,28 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
+import { SpaceSwshFeedDefs } from '@swsh/lexicon'
 
 import api from '#/services/api'
 import EntryListItem from './EntryListItem'
 
+type EntryViewWithMeta = SpaceSwshFeedDefs.EntryView & {
+  author?: { did: string }
+  rkey?: string
+}
+
+type ApiResponse = {
+  data: {
+    entries: EntryViewWithMeta[]
+  }
+}
+
 export default function EntryList() {
   const queryClient = useQueryClient()
-  const { data, isLoading, error, refetch } = useQuery({
+  const { data, isLoading, error, refetch } = useQuery<ApiResponse>({
     queryKey: ['entries'],
     queryFn: async () => {
       const response = await api.getEntries()
-      return response
+      return response as ApiResponse
     },
     // Improve reactivity with these settings
     staleTime: 0, // Consider data stale immediately

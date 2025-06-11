@@ -1,30 +1,31 @@
 import events from 'node:events'
 import fs from 'node:fs'
-import type http from 'node:http'
 import path from 'node:path'
 import { DAY, SECOND } from '@atproto/common'
-import compression from 'compression'
-import cors from 'cors'
-import express from 'express'
+import { Hono } from '@hono/hono'
+import { compress } from '@hono/hono/compress'
+import { cors } from '@hono/hono/cors'
+import { logger as honoLogger } from '@hono/hono/logger'
+import { serve } from '@hono/node-server'
 import { pino } from 'pino'
 
-import API, { health, oauth, wellKnown } from '#/api'
-import { createClient } from '#/auth/client'
-import { AppContext } from '#/context'
-import { createDb, migrateToLatest } from '#/db'
-import * as error from '#/error'
-import { createBidirectionalResolver, createIdResolver } from '#/id-resolver'
-import { createFirehoseIngester, createJetstreamIngester } from '#/ingestors'
-import { createServer } from '#/lexicons'
-import { env } from '#/lib/env'
-import * as resolve from '#/api/resolve'
-import * as getRecord from '#/api/getRecord'
-import * as deleteRecord from '#/api/deleteRecord'
+import * as deleteRecord from './api/deleteRecord.js'
+import * as getRecord from './api/getRecord.js'
+import API, { health, oauth, wellKnown } from './api/index.js'
+import * as resolve from './api/resolve.js'
+import { createClient } from './auth/client.js'
+import { AppContext } from './context.js'
+import { createDb, migrateToLatest } from './db.js'
+import * as error from './error.js'
+import { createBidirectionalResolver, createIdResolver } from './id-resolver.js'
+import { createJetstreamIngester } from './ingestors/jetstream.js'
+import { createServer } from './lexicons/index.js'
+import { env } from './lib/env.js'
 
 export class Server {
   constructor(
-    public app: express.Application,
-    public server: http.Server,
+    public app: Hono,
+    public server: ReturnType<typeof serve>,
     public ctx: AppContext,
   ) {}
 
@@ -40,7 +41,6 @@ export class Server {
     const oauthClient = await createClient(db)
     const baseIdResolver = createIdResolver()
     const ingester = await createJetstreamIngester(db)
-    // Alternative: const ingester = await createFirehoseIngester(db, baseIdResolver)
     const resolver = createBidirectionalResolver(baseIdResolver)
     const ctx = {
       db,
@@ -53,72 +53,89 @@ export class Server {
     // Subscribe to events on the firehose
     ingester.start()
 
-    const app = express()
-    app.use(cors({ maxAge: DAY / SECOND }))
-    app.use(compression())
-    app.use(express.json())
-    app.use(express.urlencoded({ extended: true }))
+    const app = new Hono()
 
-    // Create our server
+    // Middleware
+    app.use(
+      '*',
+      cors({
+        origin: '*',
+        maxAge: DAY / SECOND,
+        credentials: true,
+      }),
+    )
+    app.use('*', compress())
+    app.use('*', honoLogger())
+
+    // Add cookie middleware
+    app.use('*', async (c, next) => {
+      // Ensure headers are properly set for cookies
+      c.header('Access-Control-Allow-Credentials', 'true')
+      await next()
+    })
+
+    // Create our XRPC server
     let server = createServer({
       validateResponse: env.isDevelopment,
       payload: {
         jsonLimit: 100 * 1024, // 100kb
         textLimit: 100 * 1024, // 100kb
-        // no blobs
-        blobLimit: 0,
+        blobLimit: 0, // no blobs
       },
     })
 
-    server = API(server, ctx)
+    API(server, ctx)
 
-    app.use(health.createRouter(ctx))
-    app.use(oauth.createRouter(ctx))
-    app.use(server.xrpc.router)
-    app.use(error.createHandler(ctx))
-    app.use(wellKnown.createRouter(ctx))
-    app.use(resolve.createRouter(ctx))
-    app.use(getRecord.createRouter(ctx))
-    app.use(deleteRecord.createRouter(ctx))
+    // Mount routes
+    app.route('/', health.createRouter(ctx))
+    app.route('/', oauth.createRouter(ctx))
+    app.route('/', server.xrpc.routes)
+    app.route('/', wellKnown.createRouter(ctx))
+    app.route('/', resolve.createRouter(ctx))
+    app.route('/', getRecord.createRouter(ctx))
+    app.route('/', deleteRecord.createRouter(ctx))
 
-    // Serve static files from the frontend build - prod only
+    // Error handling
+    app.onError(error.createHandler(ctx))
+
+    // Serve static files in production
     if (env.isProduction) {
       const frontendPath = path.resolve(
         __dirname,
         '../../../packages/client/dist',
       )
 
-      // Check if the frontend build exists
       if (fs.existsSync(frontendPath)) {
         logger.info(`Serving frontend static files from: ${frontendPath}`)
 
         // Serve static files
-        app.use(express.static(frontendPath))
-
-        // For any other requests, send the index.html file
-        app.get('*', (req, res) => {
-          // Only handle non-API paths
-          if (!req.path.startsWith('/xrpc/')) {
-            res.sendFile(path.join(frontendPath, 'index.html'))
-          } else {
-            res.status(404).json({ error: 'API endpoint not found' })
+        app.use('*', async (c, next) => {
+          const filePath = path.join(frontendPath, c.req.path)
+          if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
+            return c.body(fs.readFileSync(filePath))
           }
+          await next()
         })
       } else {
         logger.warn(`Frontend build not found at: ${frontendPath}`)
-        app.use('*', (_req, res) => {
-          res.sendStatus(404)
-        })
+        app.get('*', (c) => c.newResponse('404 Not Found', 404))
       }
     } else {
-      app.set('trust proxy', true)
+      // Development mode settings
+      app.use('*', async (c, next) => {
+        c.header('X-Forwarded-Proto', 'https')
+        await next()
+      })
     }
 
-    // Use the port from env (should be 3001 for the API server)
-    const httpServer = app.listen(env.PORT)
-    await events.once(httpServer, 'listening')
+    // Start the server
+    const httpServer = serve({
+      fetch: app.fetch,
+      port: PORT,
+    })
+
     logger.info(
-      `API Server (${NODE_ENV}) running on port http://${HOST}:${env.PORT}`,
+      `API Server (${NODE_ENV}) running on port http://${HOST}:${PORT}`,
     )
 
     return new Server(app, httpServer, ctx)
@@ -127,12 +144,8 @@ export class Server {
   async close() {
     this.ctx.logger.info('sigint received, shutting down')
     await this.ctx.ingester.destroy()
-    await new Promise<void>((resolve) => {
-      this.server.close(() => {
-        this.ctx.logger.info('server closed')
-        resolve()
-      })
-    })
+    this.server.close()
+    this.ctx.logger.info('server closed')
   }
 }
 

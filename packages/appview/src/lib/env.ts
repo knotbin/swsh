@@ -17,4 +17,5 @@ export const env = cleanEnv(process.env, {
   PUBLIC_URL: str({ devDefault: '' }),
   JETSTREAM_INSTANCE: str({ default: 'wss://jetstream.sprk.so' }),
   APPVIEW_K256_PRIVATE_KEY_HEX: str(),
+  ATPROTO_SERVER: str({ default: 'https://bsky.social' }),
 })

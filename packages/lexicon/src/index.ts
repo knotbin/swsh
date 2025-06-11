@@ -195,7 +195,10 @@ export class XyzStatusphereStatusRecord {
     await this._client.call(
       'com.atproto.repo.deleteRecord',
       undefined,
-      { collection: 'xyz.statusphere.status', ...params },
+      {
+        collection: 'xyz.statusphere.status',
+        ...params,
+      },
       { headers },
     )
   }
@@ -468,7 +471,10 @@ export class ComWhtwndBlogEntryRecord {
     await this._client.call(
       'com.atproto.repo.deleteRecord',
       undefined,
-      { collection: 'com.whtwnd.blog.entry', ...params },
+      {
+        collection: 'com.whtwnd.blog.entry',
+        ...params,
+      },
       { headers },
     )
   }
@@ -580,7 +586,10 @@ export class SpaceSwshFeedEntryRecord {
     await this._client.call(
       'com.atproto.repo.deleteRecord',
       undefined,
-      { collection: 'space.swsh.feed.entry', ...params },
+      {
+        collection: 'space.swsh.feed.entry',
+        ...params,
+      },
       { headers },
     )
   }
@@ -684,7 +693,10 @@ export class AppBskyActorProfileRecord {
     await this._client.call(
       'com.atproto.repo.deleteRecord',
       undefined,
-      { collection: 'app.bsky.actor.profile', ...params },
+      {
+        collection: 'app.bsky.actor.profile',
+        ...params,
+      },
       { headers },
     )
   }

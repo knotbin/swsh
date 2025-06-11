@@ -31,7 +31,7 @@ export interface BidirectionalResolver {
 export function createBidirectionalResolver(resolver: IdResolver) {
   return {
     async resolveDidToHandle(did: string): Promise<string> {
-      const didDoc = await resolver.did.resolveAtprotoData(did) as AtprotoData
+      const didDoc = (await resolver.did.resolveAtprotoData(did)) as AtprotoData
       const resolvedHandle = await resolver.handle.resolve(didDoc.handle)
       if (resolvedHandle === did) {
         return didDoc.handle
@@ -41,7 +41,9 @@ export function createBidirectionalResolver(resolver: IdResolver) {
 
     async resolveDidToPdsUrl(did: string): Promise<string | undefined> {
       try {
-        const didDoc = await resolver.did.resolveAtprotoData(did) as AtprotoData
+        const didDoc = (await resolver.did.resolveAtprotoData(
+          did,
+        )) as AtprotoData
         return didDoc.pds
       } catch (err) {
         console.error('Error resolving PDS URL:', err)

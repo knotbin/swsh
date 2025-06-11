@@ -1,36 +1,36 @@
 import { OAuthResolverError } from '@atproto/oauth-client-node'
 import { isValidHandle } from '@atproto/syntax'
-import express from 'express'
+import { Hono } from '@hono/hono'
 
-import { AppContext } from '#/context'
-import { getSession } from '#/session'
+import { AppContext } from '../context.js'
+import { getSession } from '../session.js'
 
 export const createRouter = (ctx: AppContext) => {
-  const router = express.Router()
+  const router = new Hono()
 
   // OAuth metadata
-  router.get('/oauth-client-metadata.json', (_req, res) => {
-    res.json(ctx.oauthClient.clientMetadata)
+  router.get('/oauth-client-metadata.json', (c) => {
+    return c.json(ctx.oauthClient.clientMetadata)
   })
 
   // OAuth callback to complete session creation
-  router.get('/oauth/callback', async (req, res) => {
+  router.get('/oauth/callback', async (c) => {
     // Get the query parameters from the URL
-    const params = new URLSearchParams(req.originalUrl.split('?')[1])
+    const params = new URLSearchParams(c.req.url.split('?')[1])
 
     try {
       const { session } = await ctx.oauthClient.callback(params)
 
       // Use the common session options
-      const clientSession = await getSession(req, res)
+      const clientSession = await getSession(c)
 
       // Set the DID on the session
       clientSession.did = session.did
       await clientSession.save()
 
       // Get the origin and determine appropriate redirect
-      const host = req.get('host') || ''
-      const protocol = req.protocol || 'http'
+      const host = c.req.header('host') || ''
+      const protocol = c.req.header('x-forwarded-proto') || 'http'
       const baseUrl = `${protocol}://${host}`
 
       ctx.logger.info(
@@ -38,25 +38,26 @@ export const createRouter = (ctx: AppContext) => {
       )
 
       // Redirect to the frontend oauth-callback page
-      res.redirect('/oauth-callback')
+      return c.redirect('/oauth-callback')
     } catch (err) {
       ctx.logger.error({ err }, 'oauth callback failed')
 
       // Handle error redirect - stay on same domain
-      res.redirect('/oauth-callback?error=auth')
+      return c.redirect('/oauth-callback?error=auth')
     }
   })
 
   // Login handler
-  router.post('/oauth/initiate', async (req, res) => {
+  router.post('/oauth/initiate', async (c) => {
+    const body = await c.req.json()
+    const handle = body?.handle
+
     // Validate
-    const handle = req.body?.handle
     if (
       typeof handle !== 'string' ||
       !(isValidHandle(handle) || isValidUrl(handle))
     ) {
-      res.status(400).json({ error: 'Invalid handle' })
-      return
+      return c.json({ error: 'Invalid handle' }, 400)
     }
 
     // Initiate the OAuth flow
@@ -64,22 +65,22 @@ export const createRouter = (ctx: AppContext) => {
       const url = await ctx.oauthClient.authorize(handle, {
         scope: 'atproto transition:generic',
       })
-      res.json({ redirectUrl: url.toString() })
+      return c.json({ redirectUrl: url.toString() })
     } catch (err) {
       ctx.logger.error({ err }, 'oauth authorize failed')
       const errorMsg =
         err instanceof OAuthResolverError
           ? err.message
           : "Couldn't initiate login"
-      res.status(500).json({ error: errorMsg })
+      return c.json({ error: errorMsg }, 500)
     }
   })
 
   // Logout handler
-  router.post('/oauth/logout', async (req, res) => {
-    const session = await getSession(req, res)
+  router.post('/oauth/logout', async (c) => {
+    const session = await getSession(c)
     session.destroy()
-    res.json({ success: true })
+    return c.json({ success: true })
   })
 
   return router

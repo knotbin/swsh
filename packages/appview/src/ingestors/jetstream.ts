@@ -3,12 +3,12 @@ import {
   SpaceSwshFeedEntry,
   XyzStatusphereStatus,
 } from '@swsh/lexicon'
-import pino from 'pino'
+import { pino } from 'pino'
 import WebSocket from 'ws'
 
-import type { Database } from '#/db'
-import { env } from '#/lib/env'
-import { encodeFacets } from '#/lib/facets'
+import type { Database } from '../db.js'
+import { env } from '../lib/env.js'
+import { encodeFacets } from '../lib/facets.js'
 
 export async function createJetstreamIngester(db: Database) {
   const logger = pino({ name: 'jetstream ingestion' })

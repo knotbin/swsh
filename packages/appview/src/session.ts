@@ -1,10 +1,10 @@
-import { IncomingMessage, ServerResponse } from 'node:http'
 import { Agent } from '@atproto/api'
-import { Request, Response } from 'express'
+import type { Context } from '@hono/hono'
+import type { HonoRequest } from '@hono/hono'
 import { getIronSession, SessionOptions } from 'iron-session'
 
-import { AppContext } from '#/context'
-import { env } from '#/lib/env'
+import { AppContext } from './context.js'
+import { env } from './lib/env.js'
 
 type Session = { did: string }
 
@@ -15,7 +15,7 @@ const sessionOptions: SessionOptions = {
   cookieOptions: {
     secure: env.NODE_ENV === 'production',
     httpOnly: true,
-    sameSite: true,
+    sameSite: 'lax',
     path: '/',
     // Don't set domain explicitly - let browser determine it
     domain: undefined,
@@ -23,26 +23,33 @@ const sessionOptions: SessionOptions = {
 }
 
 export async function getSessionAgent(
-  req: IncomingMessage | Request,
-  res: ServerResponse<IncomingMessage> | Response,
+  reqOrContext: Context | HonoRequest,
   ctx: AppContext,
 ) {
-  const session = await getIronSession<Session>(req, res, sessionOptions)
-
-  if (!session.did) {
-    return null
-  }
-
   try {
-    const oauthSession = await ctx.oauthClient.restore(session.did)
-    return oauthSession ? new Agent(oauthSession) : null
+    const req = 'raw' in reqOrContext ? reqOrContext.raw : reqOrContext.req.raw
+    const res = new Response()
+
+    const session = await getIronSession<Session>(req, res, sessionOptions)
+
+    if (!session.did) {
+      return null
+    }
+
+    try {
+      const oauthSession = await ctx.oauthClient.restore(session.did)
+      return oauthSession ? new Agent(oauthSession) : null
+    } catch (err) {
+      ctx.logger.warn({ err }, 'oauth restore failed')
+      session.destroy()
+      return null
+    }
   } catch (err) {
-    ctx.logger.warn({ err }, 'oauth restore failed')
-    session.destroy()
+    ctx.logger.error({ err }, 'Failed to get session')
     return null
   }
 }
 
-export async function getSession(req: Request, res: Response) {
-  return getIronSession<Session>(req, res, sessionOptions)
+export async function getSession(c: Context) {
+  return getIronSession<Session>(c.req.raw, c.res, sessionOptions)
 }

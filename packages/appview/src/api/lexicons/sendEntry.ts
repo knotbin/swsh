@@ -6,17 +6,17 @@ import {
 } from '@atproto/xrpc-server'
 import { SpaceSwshFeedEntry } from '@swsh/lexicon'
 
-import { AppContext } from '#/context'
-import { Facet } from '#/db'
-import { Server } from '#/lexicons'
-import { encodeFacets } from '#/lib/facets'
-import { entryToEntryView } from '#/lib/hydrate'
-import { getSessionAgent } from '#/session'
+import { AppContext } from '../../context.js'
+import { Facet } from '../../db.js'
+import { Server } from '../../lexicons/index.js'
+import { encodeFacets } from '../../lib/facets.js'
+import { entryToEntryView } from '../../lib/hydrate.js'
+import { getSessionAgent } from '../../session.js'
 
 export default function (server: Server, ctx: AppContext) {
   server.space.swsh.feed.sendEntry({
-    handler: async ({ input, req, res }) => {
-      const agent = await getSessionAgent(req, res, ctx)
+    handler: async ({ input, req }) => {
+      const agent = await getSessionAgent(req, ctx)
       if (!agent) {
         throw new AuthRequiredError('Authentication required')
       }
@@ -82,7 +82,7 @@ export default function (server: Server, ctx: AppContext) {
             ...optimisticEntry,
             facets: encodeFacets(record.facets),
           })
-          .onConflict((oc) =>
+          .onConflict((oc: any) =>
             oc.column('uri').doUpdateSet({
               content: record.content,
               title: record.title,

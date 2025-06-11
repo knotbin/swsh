@@ -1,8 +1,8 @@
 import { NodeOAuthClient } from '@atproto/oauth-client-node'
 
-import type { Database } from '#/db'
-import { env } from '#/lib/env'
-import { SessionStore, StateStore } from './storage'
+import type { Database } from '../db.js'
+import { env } from '../lib/env.js'
+import { SessionStore, StateStore } from './storage.js'
 
 export const createClient = async (db: Database) => {
   if (env.isProduction && !env.PUBLIC_URL) {
@@ -29,6 +29,6 @@ export const createClient = async (db: Database) => {
       dpop_bound_access_tokens: true,
     },
     stateStore: new StateStore(db),
-    sessionStore: new SessionStore(db),
+    sessionStore: new SessionStore(db)
   })
 }

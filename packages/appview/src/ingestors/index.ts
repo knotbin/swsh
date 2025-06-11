@@ -1,2 +1,2 @@
-export * from './jetstream'
-export * from './firehose'
+export * from './jetstream.js'
+export * from './firehose.js'

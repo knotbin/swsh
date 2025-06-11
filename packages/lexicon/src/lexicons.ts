@@ -1961,7 +1961,9 @@ export function validate(
     : {
         success: false,
         error: new ValidationError(
-          `Must be an object with "${hash === 'main' ? id : `${id}#${hash}`}" $type property`,
+          `Must be an object with "${
+            hash === 'main' ? id : `${id}#${hash}`
+          }" $type property`,
         ),
       }
 }
