@@ -20,7 +20,7 @@
     "start:appview": "pnpm --filter @swsh/appview start",
     "start:client": "pnpm --filter @swsh/client start",
     "clean": "pnpm -r clean",
-    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "format": "echo 'no format'",
     "typecheck": "pnpm -r typecheck"
   },
   "devDependencies": {
