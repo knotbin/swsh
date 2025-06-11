@@ -4,18 +4,14 @@
 import { BlobRef } from '@atproto/lexicon'
 
 import { validate as _validate } from '../../../../lexicons.js'
-import {
-  is$typed as _is$typed,
-  type $Typed,
-  type OmitKey,
-} from '../../../../util.js'
+import { is$typed as _is$typed } from '../../../../util.js'
 import type * as SpaceSwshRichtextFacet from '../richtext/facet.js'
 
 const is$typed = _is$typed,
   validate = _validate
 const id = 'space.swsh.feed.entry'
 
-export interface Record {
+export interface MainRecord {
   $type: 'space.swsh.feed.entry'
   /** The primary post content. */
   content: string
@@ -31,12 +27,14 @@ export interface Record {
   [k: string]: unknown
 }
 
-const hashRecord = 'main'
+export type Record = MainRecord
 
-export function isRecord<V>(v: V) {
-  return is$typed(v, id, hashRecord)
+const hashMainRecord = 'main'
+
+export function isMainRecord<V>(v: V) {
+  return is$typed(v, id, hashMainRecord)
 }
 
-export function validateRecord<V>(v: V) {
-  return validate<Record & V>(v, id, hashRecord, true)
+export function validateMainRecord<V>(v: V) {
+  return validate<MainRecord & V>(v, id, hashMainRecord, true)
 }

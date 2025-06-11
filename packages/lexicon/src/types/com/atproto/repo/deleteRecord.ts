@@ -5,7 +5,7 @@ import { HeadersMap, XRPCError } from '@atproto/xrpc'
 
 import type * as ComAtprotoRepoDefs from './defs.js'
 
-export interface QueryParams {}
+export type QueryParams = Record<never, never>
 
 export interface InputSchema {
   /** The handle or DID of the repo (aka, current account). */

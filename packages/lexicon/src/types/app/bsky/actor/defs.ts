@@ -2,11 +2,7 @@
  * GENERATED CODE - DO NOT MODIFY
  */
 import { validate as _validate } from '../../../../lexicons.js'
-import {
-  is$typed as _is$typed,
-  type $Typed,
-  type OmitKey,
-} from '../../../../util.js'
+import { is$typed as _is$typed } from '../../../../util.js'
 import type * as ComAtprotoLabelDefs from '../../../com/atproto/label/defs.js'
 
 const is$typed = _is$typed,

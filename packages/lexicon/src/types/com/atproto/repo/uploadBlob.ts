@@ -4,8 +4,7 @@
 import { BlobRef } from '@atproto/lexicon'
 import { HeadersMap, XRPCError } from '@atproto/xrpc'
 
-export interface QueryParams {}
-
+export type QueryParams = Record<never, never>
 export type InputSchema = string | Uint8Array | Blob
 
 export interface OutputSchema {

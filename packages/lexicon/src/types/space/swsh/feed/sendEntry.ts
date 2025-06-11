@@ -6,7 +6,7 @@ import { HeadersMap, XRPCError } from '@atproto/xrpc'
 import type * as SpaceSwshRichtextFacet from '../richtext/facet.js'
 import type * as SpaceSwshFeedDefs from './defs.js'
 
-export interface QueryParams {}
+export type QueryParams = Record<never, never>
 
 export interface InputSchema {
   title?: string

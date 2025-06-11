@@ -8,7 +8,7 @@ import {
   type ValidationResult,
 } from '@atproto/lexicon'
 
-import { is$typed, maybe$typed, type $Typed } from './util.js'
+import { is$typed, maybe$typed } from './util.js'
 
 export const schemaDict = {
   XyzStatusphereDefs: {

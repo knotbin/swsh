@@ -2,11 +2,7 @@
  * GENERATED CODE - DO NOT MODIFY
  */
 import { validate as _validate } from '../../../../lexicons.js'
-import {
-  is$typed as _is$typed,
-  type $Typed,
-  type OmitKey,
-} from '../../../../util.js'
+import { is$typed as _is$typed } from '../../../../util.js'
 
 const is$typed = _is$typed,
   validate = _validate
@@ -84,11 +80,11 @@ export interface LabelValueDefinition {
   /** The value of the label being defined. Must only include lowercase ascii and the '-' character ([a-z-]+). */
   identifier: string
   /** How should a client visually convey this label? 'inform' means neutral and informational; 'alert' means negative and warning; 'none' means show nothing. */
-  severity: 'inform' | 'alert' | 'none' | (string & {})
+  severity: 'inform' | 'alert' | 'none' | (string & { __brand?: never })
   /** What should this label hide in the UI, if applied? 'content' hides all of the target; 'media' hides the images/video/audio; 'none' hides nothing. */
-  blurs: 'content' | 'media' | 'none' | (string & {})
+  blurs: 'content' | 'media' | 'none' | (string & { __brand?: never })
   /** The default setting for this label. */
-  defaultSetting: 'ignore' | 'warn' | 'hide' | (string & {})
+  defaultSetting: 'ignore' | 'warn' | 'hide' | (string & { __brand?: never })
   /** Does the user need to have adult content enabled in order to configure this label? */
   adultOnly?: boolean
   locales: LabelValueDefinitionStrings[]
@@ -141,4 +137,4 @@ export type LabelValue =
   | 'nudity'
   | 'nsfl'
   | 'gore'
-  | (string & {})
+  | (string & { __brand?: never })

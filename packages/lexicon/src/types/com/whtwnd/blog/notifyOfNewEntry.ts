@@ -3,13 +3,13 @@
  */
 import { HeadersMap, XRPCError } from '@atproto/xrpc'
 
-export interface QueryParams {}
+export type QueryParams = Record<never, never>
 
 export interface InputSchema {
   entryUri: string
 }
 
-export interface OutputSchema {}
+export type OutputSchema = Record<never, never>
 
 export interface CallOptions {
   signal?: AbortSignal

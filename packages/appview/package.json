@@ -14,7 +14,7 @@
     "dev": "tsx watch src/index.ts | pino-pretty",
     "build": "tsup",
     "start": "node dist/index.js",
-    "lexgen": "deno run -A jsr:@sprk/lex-cli@^0.1.5 gen-server --hono-import @hono/hono --js ./src/lexicons ../../lexicons/xyz/*/* ../../lexicons/com/atproto/*/* ../../lexicons/com/whtwnd/*/* ../../lexicons/space/swsh/*/* ../../lexicons/app/bsky/*/* --yes && pnpm format",
+    "lexgen": "deno run -A jsr:@sprk/lex-cli@^0.1.6 gen-server --hono-import @hono/hono --js ./src/lexicons ../../lexicons/xyz/*/* ../../lexicons/com/atproto/*/* ../../lexicons/com/whtwnd/*/* ../../lexicons/space/swsh/*/* ../../lexicons/app/bsky/*/* --yes && pnpm format",
     "clean": "rimraf dist coverage",
     "format": "prettier --write src",
     "typecheck": "tsc --noEmit"
@@ -34,11 +34,11 @@
     "@hono/node-server": "^1.0.0",
     "@sprk/xrpc-server": "jsr:^0.1.3",
     "@swsh/lexicon": "workspace:*",
-    "better-sqlite3": "^11.8.1",
     "dotenv": "^16.4.7",
     "envalid": "^8.0.0",
     "iron-session": "^8.0.4",
-    "kysely": "^0.27.5",
+    "kysely": "^0.28.2",
+    "better-sqlite3": "^11.10.0",
     "multiformats": "^13.3.2",
     "pino": "^9.6.0",
     "ws": "^8.18.1"

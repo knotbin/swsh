@@ -4,18 +4,14 @@
 import { HeadersMap, XRPCError } from '@atproto/xrpc'
 
 import { validate as _validate } from '../../../../lexicons.js'
-import {
-  is$typed as _is$typed,
-  type $Typed,
-  type OmitKey,
-} from '../../../../util.js'
+import { is$typed as _is$typed, type $Typed } from '../../../../util.js'
 import type * as ComAtprotoRepoDefs from './defs.js'
 
 const is$typed = _is$typed,
   validate = _validate
 const id = 'com.atproto.repo.applyWrites'
 
-export interface QueryParams {}
+export type QueryParams = Record<never, never>
 
 export interface InputSchema {
   /** The handle or DID of the repo (aka, current account). */
@@ -121,7 +117,7 @@ export interface CreateResult {
   $type?: 'com.atproto.repo.applyWrites#createResult'
   uri: string
   cid: string
-  validationStatus?: 'valid' | 'unknown' | (string & {})
+  validationStatus?: 'valid' | 'unknown' | (string & { __brand?: never })
 }
 
 const hashCreateResult = 'createResult'
@@ -138,7 +134,7 @@ export interface UpdateResult {
   $type?: 'com.atproto.repo.applyWrites#updateResult'
   uri: string
   cid: string
-  validationStatus?: 'valid' | 'unknown' | (string & {})
+  validationStatus?: 'valid' | 'unknown' | (string & { __brand?: never })
 }
 
 const hashUpdateResult = 'updateResult'

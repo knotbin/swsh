@@ -20,7 +20,7 @@
     "dev": "tsup --watch",
     "clean": "rimraf dist",
     "typecheck": "tsc --noEmit",
-    "lexgen": "deno run -A jsr:@sprk/lex-cli@^0.1.5 gen-api --js ./src ../../lexicons/xyz/*/* ../../lexicons/com/atproto/*/* ../../lexicons/com/whtwnd/*/* ../../lexicons/space/swsh/*/* ../../lexicons/app/bsky/*/* --yes && pnpm format",
+    "lexgen": "deno run -A jsr:@sprk/lex-cli@^0.1.6 gen-api --js ./src ../../lexicons/xyz/*/* ../../lexicons/com/atproto/*/* ../../lexicons/com/whtwnd/*/* ../../lexicons/space/swsh/*/* ../../lexicons/app/bsky/*/* --yes && pnpm format",
     "format": "prettier --write src"
   },
   "dependencies": {

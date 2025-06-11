@@ -6,7 +6,6 @@ import {
   type FetchHandler,
   type FetchHandlerOptions,
 } from '@atproto/xrpc'
-import { CID } from 'multiformats/cid'
 
 import { schemas } from './lexicons.js'
 import * as AppBskyActorDefs from './types/app/bsky/actor/defs.js'

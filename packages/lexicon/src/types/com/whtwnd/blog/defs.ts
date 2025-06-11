@@ -4,11 +4,7 @@
 import { BlobRef } from '@atproto/lexicon'
 
 import { validate as _validate } from '../../../../lexicons.js'
-import {
-  is$typed as _is$typed,
-  type $Typed,
-  type OmitKey,
-} from '../../../../util.js'
+import { is$typed as _is$typed } from '../../../../util.js'
 
 const is$typed = _is$typed,
   validate = _validate

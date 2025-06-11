@@ -5,7 +5,7 @@ import { HeadersMap, XRPCError } from '@atproto/xrpc'
 
 import type * as XyzStatusphereDefs from './defs.js'
 
-export interface QueryParams {}
+export type QueryParams = Record<never, never>
 
 export interface InputSchema {
   status: string
