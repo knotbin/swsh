@@ -38,7 +38,7 @@ export default function (server: Server, ctx: AppContext) {
         visibility: input.body.visibility ?? 'public',
       }
 
-      const validation = SpaceSwshFeedEntry.validateRecord(record)
+      const validation = SpaceSwshFeedEntry.validateMainRecord(record)
       if (!validation.success) {
         throw new InvalidRequestError('Invalid entry')
       }

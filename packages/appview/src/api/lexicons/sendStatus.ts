@@ -27,7 +27,7 @@ export default function (server: Server, ctx: AppContext) {
         createdAt: new Date().toISOString(),
       }
 
-      const validation = XyzStatusphereStatus.validateRecord(record)
+      const validation = XyzStatusphereStatus.validateMainRecord(record)
       if (!validation.success) {
         throw new InvalidRequestError('Invalid status')
       }
