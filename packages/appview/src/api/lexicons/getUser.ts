@@ -39,16 +39,18 @@ export default function (server: Server, ctx: AppContext) {
           const profileRecord = profileResponse?.data
           let profile: AppBskyActorProfile.Record = {} as AppBskyActorProfile.Record
 
-          if (profileRecord && AppBskyActorProfile.isRecord(profileRecord.value)) {
-            const validated = AppBskyActorProfile.validateRecord(
-              profileRecord.value,
-            )
-            if (validated.success) {
-              profile = profileRecord.value
+          if (profileRecord?.value) {
+            // Type check the profile record
+            if (
+              typeof profileRecord.value === 'object' &&
+              profileRecord.value !== null &&
+              'displayName' in profileRecord.value
+            ) {
+              profile = profileRecord.value as AppBskyActorProfile.Record
             } else {
               ctx.logger.error(
-                { err: validated.error, did },
-                'Failed to validate user profile',
+                { value: profileRecord.value, did },
+                'Invalid user profile data',
               )
               throw new ApiError('Invalid user profile data')
             }
