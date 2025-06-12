@@ -14,13 +14,14 @@ const proxyOptions = {
   },
 };
 
-// Proxy all API requests
-app.use('/xrpc', createProxyMiddleware(proxyOptions));
-app.use('/oauth', createProxyMiddleware(proxyOptions));
-app.use('/client-metadata.json', createProxyMiddleware(proxyOptions));
-app.use('/resolve', createProxyMiddleware(proxyOptions));
+// Proxy all API requests with subpaths
+app.use('/xrpc', createProxyMiddleware({ ...proxyOptions, pathRewrite: undefined }));
+app.use('/oauth', createProxyMiddleware({ ...proxyOptions, pathRewrite: undefined }));
+app.use('/client-metadata.json', createProxyMiddleware({ ...proxyOptions, pathRewrite: undefined }));
+app.use('/oauth-client-metadata.json', createProxyMiddleware({ ...proxyOptions, pathRewrite: undefined }));
+app.use('/resolve', createProxyMiddleware({ ...proxyOptions, pathRewrite: undefined }));
+app.use('/.well-known', createProxyMiddleware({ ...proxyOptions, pathRewrite: undefined }));
 app.use('/api', createProxyMiddleware(proxyOptions));
-
 // Serve static files from the dist directory
 app.use(express.static(path.join(__dirname, 'dist')));
 

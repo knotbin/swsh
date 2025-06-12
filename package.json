@@ -39,5 +39,10 @@
   "packageManager": "pnpm@10.12.1",
   "dependencies": {
     "@hono/hono": "jsr:^4.7.11"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "better-sqlite3"
+    ]
   }
 }

@@ -15,7 +15,7 @@ export const createClient = async (db: Database) => {
 
   return new NodeOAuthClient({
     clientMetadata: {
-      client_name: 'Statusphere React App',
+      client_name: 'Swsh',
       client_id: publicUrl
         ? `${url}/oauth-client-metadata.json`
         : `http://localhost?redirect_uri=${enc(`${url}/oauth/callback`)}&scope=${enc('atproto transition:generic')}`,
