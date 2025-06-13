@@ -1,6 +1,7 @@
 import events from 'node:events'
 import fs from 'node:fs'
 import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { DAY, SECOND } from '@atproto/common'
 import { Hono } from '@hono/hono'
 import { compress } from '@hono/hono/compress'
@@ -100,6 +101,8 @@ export class Server {
 
     // Serve static files in production
     if (env.isProduction) {
+      const __filename = fileURLToPath(import.meta.url)
+      const __dirname = path.dirname(__filename)
       const frontendPath = path.resolve(
         __dirname,
         '../../../packages/client/dist',

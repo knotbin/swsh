@@ -19,7 +19,7 @@ COPY packages/appview/package.json ./packages/appview/
 COPY packages/client/package.json ./packages/client/
 COPY packages/lexicon/package.json ./packages/lexicon/
 
-RUN pnpm --allow-build=better-sqlite3 add better-sqlite3
+RUN pnpm approve-builds better-sqlite3
 # Install dependencies and rebuild better-sqlite3
 RUN pnpm install --frozen-lockfile
 
