@@ -50,9 +50,9 @@ export async function createFirehoseIngester(
         // If the write is a valid status update
         if (
           evt.collection === 'xyz.statusphere.status' &&
-          XyzStatusphereStatus.isRecord(record)
+          XyzStatusphereStatus.isMainRecord(record)
         ) {
-          const validatedRecord = XyzStatusphereStatus.validateRecord(record)
+          const validatedRecord = XyzStatusphereStatus.validateMainRecord(record)
           if (!validatedRecord.success) return
           // Store the status in our SQLite
           await db

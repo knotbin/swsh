@@ -13,7 +13,7 @@ type BlogEntry = SpaceSwshFeedDefs.EntryView & {
 }
 
 export default function EntryView() {
-  const { handle, rkey } = useParams<{ handle: string; rkey: string }>()
+  const { handle, rkey } = useParams<{ handle: string; rkey?: string }>()
   const [entry, setEntry] = useState<BlogEntry | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -23,15 +23,20 @@ export default function EntryView() {
 
   useEffect(() => {
     const fetchEntry = async () => {
-      if (!rkey) {
-        setError('Entry ID is missing')
+      if (!handle) {
+        setError('Handle is missing')
         setLoading(false)
         return
       }
 
       try {
         setLoading(true)
-        const response = await api.getEntry({ handle, rkey })
+        // If handle starts with 'did:', use it as repo instead
+        const params = handle.startsWith('did:') 
+          ? { repo: handle, ...(rkey ? { rkey } : {}) }
+          : { handle, ...(rkey ? { rkey } : {}) }
+        
+        const response = await api.getEntry(params)
 
         if (!response.data.entry) {
           setError(`Entry not found`)
@@ -60,7 +65,7 @@ export default function EntryView() {
     }
 
     fetchEntry()
-  }, [rkey])
+  }, [handle, rkey])
 
   const handleDelete = async () => {
     if (!entry?.rkey) {

@@ -22,6 +22,7 @@ function App() {
               <Route path="/oauth-callback" element={<OAuthCallbackPage />} />
               <Route path="/edit" element={<EditEntry />} />
               <Route path="/:handle/entry/:rkey" element={<EntryView />} />
+              <Route path="/:handle/entry" element={<EntryView />} />
             </Routes>
           </div>
         </div>

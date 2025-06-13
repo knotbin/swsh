@@ -48,40 +48,7 @@ export async function createJetstreamIngester(db: Database) {
       const now = new Date()
       const uri = `at://${evt.did}/${evt.commit.collection}/${evt.commit.rkey}`
 
-      if (evt.commit.collection === 'xyz.statusphere.status') {
-        if (evt.commit.operation === 'delete') {
-          await db.deleteFrom('status').where('uri', '=', uri).execute()
-          return
-        }
-        if (
-          evt.commit.operation === 'create' ||
-          evt.commit.operation === 'update'
-        ) {
-          if (!XyzStatusphereStatus.isMainRecord(evt.commit.record)) return
-
-          const validatedRecord = XyzStatusphereStatus.validateMainRecord(
-            evt.commit.record,
-          )
-          if (!validatedRecord.success) return
-
-          await db
-            .insertInto('status')
-            .values({
-              uri,
-              authorDid: evt.did,
-              status: validatedRecord.value.status,
-              createdAt: validatedRecord.value.createdAt,
-              indexedAt: now.toISOString(),
-            })
-            .onConflict((oc) =>
-              oc.column('uri').doUpdateSet({
-                status: validatedRecord.value.status,
-                indexedAt: now.toISOString(),
-              }),
-            )
-            .execute()
-        }
-      } else if (evt.commit.collection === 'space.swsh.feed.entry') {
+      if (evt.commit.collection === 'space.swsh.feed.entry') {
         if (evt.commit.operation === 'delete') {
           await db.deleteFrom('entry').where('uri', '=', uri).execute()
           return

@@ -67,10 +67,24 @@ export async function bskyProfileToProfileView(
   profile: AppBskyActorProfile.Record,
   ctx: AppContext,
 ): Promise<AppBskyActorDefs.ProfileView> {
+  // Try to resolve the handle, but fall back to using the DID if resolution fails
+  let handle: string
+  try {
+    handle = await ctx.resolver.resolveDidToHandle(did)
+    if (!handle) {
+      throw new Error('Handle resolution returned null')
+    }
+    // Strip at:// prefix if present
+    handle = handle.replace('at://', '')
+  } catch (err) {
+    // If handle resolution fails, use the DID as the handle
+    handle = did
+  }
+
   return {
     $type: 'app.bsky.actor.defs#profileView',
     did: did,
-    handle: await ctx.resolver.resolveDidToHandle(did),
+    handle: handle,
     avatar: profile.avatar
       ? `https://atproto.pictures/img/${did}/${profile.avatar.ref}`
       : undefined,

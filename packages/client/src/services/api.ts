@@ -100,11 +100,15 @@ export const api = {
   },
 
   // Get entry
-  async getEntry(params: { handle?: string; repo?: string; rkey: string }) {
+  async getEntry(params: { handle?: string; repo?: string; rkey?: string }) {
     // Create a parameters object with only the properties that are present
     const getRecordParams: Record<string, string> = {
       collection: 'space.swsh.feed.entry',
-      rkey: params.rkey,
+    }
+    
+    // Only add rkey parameter if it exists
+    if (params.rkey) {
+      getRecordParams.rkey = params.rkey
     }
     
     // Only add repo parameter if it exists
@@ -114,10 +118,11 @@ export const api = {
     
     // Only add handle parameter if it exists
     if (params.handle) {
-      getRecordParams.user = params.handle
+      getRecordParams.handle = params.handle
     }
     
     const url = `/api/getRecord?${new URLSearchParams(getRecordParams).toString()}`
+    console.log('getEntry URL:', url)
 
     const response = await fetch(url, {
       credentials: 'include',
@@ -127,6 +132,7 @@ export const api = {
     })
 
     const text = await response.text()
+    console.log('getEntry response:', text)
 
     try {
       const data = JSON.parse(text)
@@ -135,7 +141,6 @@ export const api = {
       }
       
       // Return the response in a format that matches what components expect
-      // EditEntry.tsx expects response.value, EntryView.tsx expects entry in a specific format
       return {
         uri: data.uri,
         cid: data.cid,
