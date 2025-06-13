@@ -17,7 +17,7 @@ export default function EntryList() {
           did: string,
           handle?: string 
         }, 
-        uri: string,
+        uri?: string,
         content: string,
         createdAt: string,
         severity: string
@@ -30,7 +30,7 @@ export default function EntryList() {
               did: entry.author.did,
               handle: entry.author.handle?.replace('at://', '') 
             },
-            rkey: entry.uri.split('/').pop() || '',
+            rkey: entry.uri?.split('/').pop() || '',
             content: entry.content,
             createdAt: entry.createdAt,
             severity: entry.severity
