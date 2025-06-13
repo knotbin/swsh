@@ -1,4 +1,4 @@
-import { Facet } from '#/db'
+import { Facet } from '../db.js'
 
 export function decodeFacets(facetsJson: string | null): Facet[] | null {
   if (!facetsJson) return null

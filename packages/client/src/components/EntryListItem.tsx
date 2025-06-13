@@ -1,16 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { SpaceSwshFeedDefs } from '@swsh/lexicon'
 import { formatDistanceToNow } from 'date-fns'
 
 import { useAuth } from '#/hooks/useAuth'
+import { EntryView } from '#/types/entry'
 import api from '#/services/api'
 
 interface EntryListItemProps {
-  entry: SpaceSwshFeedDefs.EntryView & {
-    author?: { did: string; handle?: string }
-    rkey?: string
-  }
+  entry: EntryView
   onEntryDeleted?: () => void
 }
 
@@ -21,7 +18,7 @@ export default function EntryListItem({
   const createdAt = entry.createdAt || new Date().toISOString()
   const navigate = useNavigate()
   const { user } = useAuth()
-  const isOwnEntry = user?.profile.did === entry.author?.did
+  const isOwnEntry = user?.profile.did === entry.author.did
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isDeleted, setIsDeleted] = useState(false)
 
@@ -72,7 +69,7 @@ export default function EntryListItem({
     }
 
     // Navigate to the full blog view
-    const handle = entry.author?.handle || user?.profile.handle || 'user'
+    const handle = entry.author.handle || entry.author.did
     navigate(`/${handle}/entry/${entry.rkey}`)
   }
 
@@ -184,10 +181,10 @@ export default function EntryListItem({
             {formatDistanceToNow(new Date(createdAt), { addSuffix: true })}
           </span>
         </div>
-        {entry.author?.handle && (
+        {entry.author.handle && (
           <div className="text-gray-600 dark:text-gray-400">
             <span>{entry.author.handle}</span>
-            {entry.author?.did && (
+            {entry.author.did && (
               <span className="ml-2 text-gray-500 dark:text-gray-500 text-xs">
                 {entry.author.did.substring(0, 10)}...
               </span>

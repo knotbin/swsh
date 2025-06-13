@@ -38,11 +38,14 @@ export default function EntryView() {
         } else {
           // Convert the response data to the expected BlogEntry format
           const entryData = response.data.entry
+          
+          // The API returns author.did, and we use the handle from URL params
+          // or fallback to the DID if no handle is available
           const blogEntry: BlogEntry = {
             ...entryData,
             author: {
-              did: entryData.author?.did || '',
-              handle: entryData.author?.handle || handle || '',
+              did: entryData.author.did,
+              handle: handle || entryData.author.did, // Use URL handle or fallback to DID
             },
             rkey,
           }

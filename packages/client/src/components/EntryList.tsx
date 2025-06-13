@@ -1,28 +1,35 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
-import { SpaceSwshFeedDefs } from '@swsh/lexicon'
 
 import api from '#/services/api'
+import { EntryView, EntriesResponse } from '#/types/entry'
 import EntryListItem from './EntryListItem'
-
-type EntryViewWithMeta = SpaceSwshFeedDefs.EntryView & {
-  author?: { did: string }
-  rkey?: string
-}
-
-type ApiResponse = {
-  data: {
-    entries: EntryViewWithMeta[]
-  }
-}
 
 export default function EntryList() {
   const queryClient = useQueryClient()
-  const { data, isLoading, error, refetch } = useQuery<ApiResponse>({
+  const { data, isLoading, error, refetch } = useQuery<EntriesResponse>({
     queryKey: ['entries'],
     queryFn: async () => {
       const response = await api.getEntries()
-      return response as ApiResponse
+      const entries = (response.data.entries as unknown as Array<{ 
+        author: { did: string }, 
+        uri: string,
+        content: string,
+        createdAt: string,
+        severity: string
+      }>)
+      return {
+        data: {
+          entries: entries.map(entry => ({
+            ...entry,
+            author: { did: entry.author.did },
+            rkey: entry.uri.split('/').pop() || '',
+            content: entry.content,
+            createdAt: entry.createdAt,
+            severity: entry.severity
+          }))
+        }
+      } as EntriesResponse
     },
     // Improve reactivity with these settings
     staleTime: 0, // Consider data stale immediately
@@ -81,7 +88,7 @@ export default function EntryList() {
     <div>
       {data.data.entries.map((entry) => (
         <EntryListItem 
-          key={entry.rkey || entry.createdAt} 
+          key={entry.uri || entry.rkey || entry.createdAt} 
           entry={entry} 
           onEntryDeleted={() => refetch()}
         />

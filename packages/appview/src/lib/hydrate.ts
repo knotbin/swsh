@@ -6,8 +6,8 @@ import {
   XyzStatusphereDefs,
 } from '@swsh/lexicon'
 
-import { AppContext } from '#/context'
-import { Entry, Status } from '#/db'
+import { AppContext } from '../context.js'
+import { Entry, Status } from '../db.js'
 
 export async function statusToStatusView(
   status: Status,
@@ -30,10 +30,22 @@ export async function entryToEntryView(
   entry: Entry,
   ctx: AppContext,
 ): Promise<
-  SpaceSwshFeedDefs.EntryView & { author: { did: string }; rkey: string }
+  SpaceSwshFeedDefs.EntryView & { 
+    author: { 
+      did: string
+      handle?: string 
+    }
+    rkey: string
+    uri: string
+  }
 > {
   // Extract rkey from URI
   const rkey = entry.uri.split('/').pop() || ''
+
+  // Resolve the handle for the author
+  const handle = await ctx.resolver
+    .resolveDidToHandle(entry.authorDid)
+    .catch(() => undefined)
 
   return {
     $type: 'space.swsh.feed.defs#entryView',
@@ -41,8 +53,12 @@ export async function entryToEntryView(
     title: entry.title ?? undefined,
     subtitle: entry.subtitle ?? undefined,
     createdAt: entry.createdAt,
-    author: { did: entry.authorDid },
+    author: { 
+      did: entry.authorDid,
+      handle
+    },
     rkey,
+    uri: entry.uri
   }
 }
 

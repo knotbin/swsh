@@ -39,15 +39,15 @@ export const createRouter = (ctx: AppContext) => {
   const router = new Hono()
 
   router.get('/api/getRecord', async (c) => {
-    const handle = c.req.query('handle')
+    const user = c.req.query('user')
     const repo = c.req.query('repo')
     const collection = c.req.query('collection')
     const rkey = c.req.query('rkey')
     const cid = c.req.query('cid')
     const handleResolver = new HandleResolver()
 
-    if ((!repo && !handle) || !collection || !rkey) {
-      return c.json({ error: 'Missing required parameters: repo, collection, rkey' }, 400)
+    if ((!repo && !user) || !collection || !rkey) {
+      return c.json({ error: 'Missing required parameters: repo or user, collection, rkey' }, 400)
     }
 
     try {
@@ -59,17 +59,31 @@ export const createRouter = (ctx: AppContext) => {
           return c.json({ error: 'Authentication required' }, 401)
         }
         actualRepo = agent.assertDid
-      } else {
+      } else if (repo) {
         actualRepo = repo as string
-      }
-
-      if (handle) {
-        const did = await handleResolver.resolve(handle as string)
-        if (!did) {
-          ctx.logger.error({ handle }, 'Handle resolution failed')
-          return c.json({ error: 'Handle not found' }, 404)
+      } else if (user) {
+        try {
+          // If user is a DID, use it directly
+          if (user.startsWith('did:')) {
+            actualRepo = user
+          } else {
+            // Otherwise resolve the handle to DID
+            const did = await handleResolver.resolve(user as string)
+            if (!did) {
+              ctx.logger.error({ user }, 'Handle resolution failed - no DID found')
+              return c.json({ error: 'User not found' }, 404)
+            }
+            actualRepo = did
+          }
+        } catch (err) {
+          ctx.logger.error({ err, user }, 'Handle resolution failed')
+          return c.json({ 
+            error: 'Failed to resolve user identifier',
+            details: err instanceof Error ? err.message : 'Unknown error'
+          }, 500)
         }
-        actualRepo = did
+      } else {
+        return c.json({ error: 'Invalid parameters' }, 400)
       }
 
       // For feed entries, first check if it's in our database

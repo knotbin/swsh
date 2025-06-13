@@ -57,9 +57,9 @@ export async function createJetstreamIngester(db: Database) {
           evt.commit.operation === 'create' ||
           evt.commit.operation === 'update'
         ) {
-          if (!XyzStatusphereStatus.isRecord(evt.commit.record)) return
+          if (!XyzStatusphereStatus.isMainRecord(evt.commit.record)) return
 
-          const validatedRecord = XyzStatusphereStatus.validateRecord(
+          const validatedRecord = XyzStatusphereStatus.validateMainRecord(
             evt.commit.record,
           )
           if (!validatedRecord.success) return
@@ -95,7 +95,7 @@ export async function createJetstreamIngester(db: Database) {
             'attempting to validate feed entry',
           )
 
-          if (!SpaceSwshFeedEntry.isRecord(evt.commit.record)) {
+          if (!SpaceSwshFeedEntry.isMainRecord(evt.commit.record)) {
             logger.info(
               { record: evt.commit.record },
               'record failed isRecord check',
@@ -103,7 +103,7 @@ export async function createJetstreamIngester(db: Database) {
             return
           }
 
-          const validatedRecord = SpaceSwshFeedEntry.validateRecord(
+          const validatedRecord = SpaceSwshFeedEntry.validateMainRecord(
             evt.commit.record,
           )
           if (!validatedRecord.success) {

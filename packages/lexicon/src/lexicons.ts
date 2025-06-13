@@ -1423,7 +1423,7 @@ export const schemaDict = {
     defs: {
       entryView: {
         type: 'object',
-        required: ['content'],
+        required: ['content', 'author', 'rkey'],
         properties: {
           title: {
             type: 'string',
@@ -1440,6 +1440,26 @@ export const schemaDict = {
           createdAt: {
             type: 'string',
             format: 'datetime',
+          },
+          author: {
+            type: 'object',
+            required: ['did'],
+            properties: {
+              did: {
+                type: 'string',
+                format: 'did',
+              },
+              handle: {
+                type: 'string',
+              },
+            },
+          },
+          rkey: {
+            type: 'string',
+          },
+          uri: {
+            type: 'string',
+            format: 'at-uri',
           },
         },
       },

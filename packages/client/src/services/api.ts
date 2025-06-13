@@ -88,8 +88,8 @@ export const api = {
   },
 
   // Get entries
-  getEntries() {
-    return agent.space.swsh.feed.getEntries()
+  getEntries(params?: { limit?: number }) {
+    return agent.space.swsh.feed.getEntries(params)
   },
 
   // Delete record
@@ -112,7 +112,7 @@ export const api = {
     
     // Only add handle parameter if it exists
     if (params.handle) {
-      getRecordParams.handle = params.handle
+      getRecordParams.user = params.handle
     }
     
     const url = `/api/getRecord?${new URLSearchParams(getRecordParams).toString()}`

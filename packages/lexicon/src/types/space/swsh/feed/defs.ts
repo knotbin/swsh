@@ -14,6 +14,12 @@ export interface EntryView {
   subtitle?: string
   content: string
   createdAt?: string
+  author: {
+    did: string
+    handle?: string
+  }
+  rkey: string
+  uri?: string
 }
 
 const hashEntryView = 'entryView'
