@@ -2,7 +2,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
 
 import api from '#/services/api'
-import { EntryView, EntriesResponse } from '#/types/entry'
+import { EntriesResponse } from '#/types/entry'
 import EntryListItem from './EntryListItem'
 
 export default function EntryList() {
