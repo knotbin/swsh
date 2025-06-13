@@ -31,12 +31,18 @@ export interface BidirectionalResolver {
 export function createBidirectionalResolver(resolver: IdResolver) {
   return {
     async resolveDidToHandle(did: string): Promise<string> {
-      const didDoc = (await resolver.did.resolveAtprotoData(did)) as AtprotoData
-      const resolvedHandle = await resolver.handle.resolve(didDoc.handle)
-      if (resolvedHandle === did) {
-        return didDoc.handle
+      try {
+        console.log('resolving did to handle', did)
+        const handle = (await resolver.did.resolve(did))
+        console.log('resolved handle', handle)
+        if (!handle?.alsoKnownAs) {
+          return did
+        }
+        return handle.alsoKnownAs[0]
+      } catch (err) {
+        console.error('Error resolving handle:', err)
+        return did
       }
-      return did
     },
 
     async resolveDidToPdsUrl(did: string): Promise<string | undefined> {

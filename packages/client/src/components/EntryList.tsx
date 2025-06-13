@@ -11,8 +11,12 @@ export default function EntryList() {
     queryKey: ['entries'],
     queryFn: async () => {
       const response = await api.getEntries()
+      console.log('EntryList received response:', JSON.stringify(response, null, 2))
       const entries = (response.data.entries as unknown as Array<{ 
-        author: { did: string }, 
+        author: { 
+          did: string,
+          handle?: string 
+        }, 
         uri: string,
         content: string,
         createdAt: string,
@@ -22,7 +26,10 @@ export default function EntryList() {
         data: {
           entries: entries.map(entry => ({
             ...entry,
-            author: { did: entry.author.did },
+            author: { 
+              did: entry.author.did,
+              handle: entry.author.handle?.replace('at://', '') 
+            },
             rkey: entry.uri.split('/').pop() || '',
             content: entry.content,
             createdAt: entry.createdAt,

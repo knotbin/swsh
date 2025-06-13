@@ -88,8 +88,10 @@ export const api = {
   },
 
   // Get entries
-  getEntries(params?: { limit?: number }) {
-    return agent.space.swsh.feed.getEntries(params)
+  async getEntries(params?: { limit?: number }) {
+    const response = await agent.space.swsh.feed.getEntries(params)
+    console.log('getEntries response:', JSON.stringify(response, null, 2))
+    return response
   },
 
   // Delete record
