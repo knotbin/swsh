@@ -32,10 +32,10 @@ export default function EntryView() {
       try {
         setLoading(true)
         // If handle starts with 'did:', use it as repo instead
-        const params = handle.startsWith('did:') 
+        const params = handle.startsWith('did:')
           ? { repo: handle, ...(rkey ? { rkey } : {}) }
-          : { handle, ...(rkey ? { rkey } : {}) }
-        
+          : { user: handle, ...(rkey ? { rkey } : {}) }
+
         const response = await api.getEntry(params)
 
         if (!response.data.entry) {
@@ -43,7 +43,7 @@ export default function EntryView() {
         } else {
           // Convert the response data to the expected BlogEntry format
           const entryData = response.data.entry
-          
+
           // The API returns author.did, and we use the handle from URL params
           // or fallback to the DID if no handle is available
           const blogEntry: BlogEntry = {

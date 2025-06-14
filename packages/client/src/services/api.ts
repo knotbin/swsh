@@ -100,27 +100,27 @@ export const api = {
   },
 
   // Get entry
-  async getEntry(params: { handle?: string; repo?: string; rkey?: string }) {
+  async getEntry(params: { user?: string; repo?: string; rkey?: string }) {
     // Create a parameters object with only the properties that are present
     const getRecordParams: Record<string, string> = {
       collection: 'space.swsh.feed.entry',
     }
-    
+
     // Only add rkey parameter if it exists
     if (params.rkey) {
       getRecordParams.rkey = params.rkey
     }
-    
+
     // Only add repo parameter if it exists
     if (params.repo) {
       getRecordParams.repo = params.repo
     }
-    
+
     // Only add handle parameter if it exists
-    if (params.handle) {
-      getRecordParams.handle = params.handle
+    if (params.user) {
+      getRecordParams.user = params.user
     }
-    
+
     const url = `/api/getRecord?${new URLSearchParams(getRecordParams).toString()}`
     console.log('getEntry URL:', url)
 
@@ -139,7 +139,7 @@ export const api = {
       if (!response.ok) {
         throw new Error(data.error || 'Failed to get entry')
       }
-      
+
       // Return the response in a format that matches what components expect
       return {
         uri: data.uri,

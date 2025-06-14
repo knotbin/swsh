@@ -77,7 +77,7 @@ export const createRouter = (ctx: AppContext) => {
           }
         } catch (err) {
           ctx.logger.error({ err, user }, 'Handle resolution failed')
-          return c.json({ 
+          return c.json({
             error: 'Failed to resolve user identifier',
             details: err instanceof Error ? err.message : 'Unknown error'
           }, 500)
